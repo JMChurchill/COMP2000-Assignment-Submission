@@ -3,7 +3,7 @@ package model;
 public class Product {
 
 
-    private String barcode;
+    private String Barcode;
     private String Name;
     private String Image;
     private float Price;
@@ -17,11 +17,11 @@ public class Product {
         Quantity = quantity;
     }
     public String getBarcode() {
-        return barcode;
+        return Barcode;
     }
 
     public void setBarcode(String barcode) {
-        this.barcode = barcode;
+        this.Barcode = barcode;
     }
 
     public String getName() {
