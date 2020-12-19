@@ -15,7 +15,7 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus){
         //return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         //assign value that is passed
-
+        // TODO: make display different text for ScannedItemJList
         Product is = (Product) value;
         setText(is.getName() + " Quantity Remaining: " + is.getQuantity() + " Price: £" + is.getPrice());
 

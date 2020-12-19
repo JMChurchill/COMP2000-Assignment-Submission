@@ -23,6 +23,8 @@ public class UserGUI extends JFrame {
     private JButton AdminLoginBtn;
 
     DefaultListModel listModel = new DefaultListModel();
+    DefaultListModel ScannedListModel = new DefaultListModel();
+
 
 
     public UserGUI() {
@@ -31,7 +33,19 @@ public class UserGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 //                super.mouseClicked(e);
-                JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
+                String Barcode = ((Product)ItemSelectJList.getSelectedValue()).getBarcode();
+                String Name = ((Product)ItemSelectJList.getSelectedValue()).getName();
+                String Img = ((Product)ItemSelectJList.getSelectedValue()).getImage();
+                Float Price = ((Product)ItemSelectJList.getSelectedValue()).getPrice();
+                int Quantity = ((Product)ItemSelectJList.getSelectedValue()).getQuantity();
+
+                if (Quantity > 0){
+                    //JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
+                    AddProductToScanned(Barcode, Name, Img, Price, Quantity);
+                } else{
+                    JOptionPane.showMessageDialog(null,"Sorry this Item is Out of Stock");
+                }
+
             }
         });
     }
@@ -62,8 +76,16 @@ public class UserGUI extends JFrame {
         //Render Images and text
         ItemSelectJList.setCellRenderer(new ItemSelectRenderer());
         ItemSelectJList.setModel(listModel);
+    }
+    //TODO: Stop multiple of the same type of items from showing up in ScannedItemJList (make so it increases a count for quantity)
+    public void AddProductToScanned(String barcode, String name, String img, float price,int quantity){
+        //listModel.clear();
+        Product tempProduct = new Product(barcode, name, img, price, quantity);
 
+        ScannedListModel.addElement(tempProduct);
 
+        ScannedItemJList.setCellRenderer(new ItemSelectRenderer());
+        ScannedItemJList.setModel(ScannedListModel);
     }
 
 
