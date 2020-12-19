@@ -10,7 +10,8 @@ public class Product {
     private int Quantity;
     public Product() {}
 
-    public Product(String name, String image, float price, int quantity) {
+    public Product(String barcode,String name, String image, float price, int quantity) {
+        Barcode = barcode;
         Name = name;
         Image = image;
         Price = price;
@@ -55,6 +56,5 @@ public class Product {
     public void setQuantity(int quantity) {
         Quantity = quantity;
     }
-
 
 }

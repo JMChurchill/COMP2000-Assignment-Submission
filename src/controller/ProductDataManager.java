@@ -1,7 +1,6 @@
 package controller;
 
 import model.Product;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -95,5 +94,9 @@ public class ProductDataManager {
 
     public void removeUser(Product oldUser){
         products.remove(oldUser);
+    }
+
+    public ArrayList<Product> getAllProducts(){
+        return products;
     }
 }
