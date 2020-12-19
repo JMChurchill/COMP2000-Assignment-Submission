@@ -1,16 +1,13 @@
 package view;
 
-import controller.ImgAndText;
 import controller.ItemSelectRenderer;
 import controller.ProductDataManager;
 import model.Product;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class UserGUI extends JFrame {
