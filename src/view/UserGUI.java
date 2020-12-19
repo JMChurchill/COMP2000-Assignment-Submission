@@ -27,10 +27,6 @@ public class UserGUI extends JFrame {
 
     public UserGUI() {
         initialiseComponents();
-//        ImageIcon image = new ImageIcon("");//create an image icon
-//        setIconImage(image.getImage()); //change icon of frame
-        //getContentPane().setBackground(Color.black);//change background colour
-//        pack();
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

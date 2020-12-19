@@ -24,7 +24,13 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
             URL url = new URL(is.getImage());
             //convert url to image
             Image urlToImg = ImageIO.read(url);
-            setIcon(new ImageIcon(urlToImg));
+            //calculate new width given height = 220
+            int newWidth = calcNewWidth(urlToImg);
+            //resize image
+            BufferedImage img = resizeImg(newWidth,180,urlToImg);
+
+            setIcon(new ImageIcon(img));
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -46,19 +52,25 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
         return this;
     }
 
-//    private Image resizeImg(int width, int height,Image oldImage){
-//        Image newImage = null;
-//        try {
-//            ImageIcon a = new ImageIcon(oldImage);
-//            newImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-//            Graphics2D g2d = (Graphics2D) newImage.createGraphics();
-//            g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY));
-//            g2d.drawImage(a.getImage(), 0, 0, WIDTH, HEIGHT, null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return newImage;
-//    }
+    private BufferedImage resizeImg(int width, int height,Image oldImage){
+        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        try {
+            Graphics2D graphics2D = resizedImage.createGraphics();
+            graphics2D.drawImage(oldImage, 0, 0, width, height, null);
+            graphics2D.dispose();
+            return resizedImage;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resizedImage;
+    }
+
+    private int calcNewWidth(Image img){
+        float currentWidth = img.getWidth(null);
+        float currentHeight = img.getHeight(null);
+        int newHeight = 180;
+        int newWidth = Math.round(newHeight/(currentHeight/currentWidth));
+        return newWidth;
+    }
 
 }
