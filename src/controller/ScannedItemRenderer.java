@@ -18,7 +18,7 @@ public class ScannedItemRenderer extends DefaultListCellRenderer implements List
         //assign value that is passed
         // TODO: make display different text for ScannedItemJList
         ScannedProduct is = (ScannedProduct) value;
-        setText(is.getName() + " Price: £" + is.getPrice() + " X " + is.getQuantityScanned() + " Total: " +(is.getQuantityScanned()*is.getPrice()));
+        setText(is.getName() + "    Price: £" + is.getPrice() + "   X " + is.getQuantityScanned() + "   Total: " +(is.getQuantityScanned()*is.getPrice()));
 
         try{
             //convert string to url
@@ -26,12 +26,11 @@ public class ScannedItemRenderer extends DefaultListCellRenderer implements List
             //convert url to image
             Image urlToImg = ImageIO.read(url);
             //calculate new width given height = 220
-//                int newWidth = calcNewWidth(urlToImg);
-//                //resize image
-//                BufferedImage img = resizeImg(newWidth, 180, urlToImg);
-
-//                setIcon(new ImageIcon(img));
-            setIcon(new ImageIcon(urlToImg));
+            int newWidth = calcNewWidth(urlToImg);
+                //resize image
+            BufferedImage img = resizeImg(newWidth, 100, urlToImg);
+            setIcon(new ImageIcon(img));
+//            setIcon(new ImageIcon(urlToImg));
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -54,25 +53,25 @@ public class ScannedItemRenderer extends DefaultListCellRenderer implements List
         return this;
     }
 
-//        private BufferedImage resizeImg(int width, int height, Image oldImage) {
-//            BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-//            try {
-//                Graphics2D graphics2D = resizedImage.createGraphics();
-//                graphics2D.drawImage(oldImage, 0, 0, width, height, null);
-//                graphics2D.dispose();
-//                return resizedImage;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return resizedImage;
-//        }
+        private BufferedImage resizeImg(int width, int height, Image oldImage) {
+            BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            try {
+                Graphics2D graphics2D = resizedImage.createGraphics();
+                graphics2D.drawImage(oldImage, 0, 0, width, height, null);
+                graphics2D.dispose();
+                return resizedImage;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return resizedImage;
+        }
 
-//        private int calcNewWidth(Image img) {
-//            float currentWidth = img.getWidth(null);
-//            float currentHeight = img.getHeight(null);
-//            int newHeight = 180;
-//            int newWidth = Math.round(newHeight / (currentHeight / currentWidth));
-//            return newWidth;
-//        }
+        private int calcNewWidth(Image img) {
+            float currentWidth = img.getWidth(null);
+            float currentHeight = img.getHeight(null);
+            int newHeight = 100;
+            int newWidth = Math.round(newHeight / (currentHeight / currentWidth));
+            return newWidth;
+        }
 
 }

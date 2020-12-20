@@ -19,7 +19,7 @@ public class ScannedProduct {
         QuantityScanned = quantityScanned;
     }
 
-    private final ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+//    private static final ArrayList<ScannedProduct> allScanned = new ArrayList<>();
 
     public String getBarcode() {
         return Barcode;
@@ -61,8 +61,8 @@ public class ScannedProduct {
         QuantityScanned = quantityScanned;
     }
 
-    public ArrayList<ScannedProduct> getAll(){
-        return allScanned;
-    }
+//    public ArrayList<ScannedProduct> getAll(){
+//        return allScanned;
+//    }
 
 }

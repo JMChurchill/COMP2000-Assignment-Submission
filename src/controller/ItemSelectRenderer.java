@@ -27,7 +27,7 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
             //calculate new width given height = 220
             int newWidth = calcNewWidth(urlToImg);
             //resize image
-            BufferedImage img = resizeImg(newWidth,180,urlToImg);
+            BufferedImage img = resizeImg(newWidth,100,urlToImg);
 
             setIcon(new ImageIcon(img));
 
@@ -68,7 +68,7 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
     private int calcNewWidth(Image img){
         float currentWidth = img.getWidth(null);
         float currentHeight = img.getHeight(null);
-        int newHeight = 180;
+        int newHeight = 100;
         int newWidth = Math.round(newHeight/(currentHeight/currentWidth));
         return newWidth;
     }

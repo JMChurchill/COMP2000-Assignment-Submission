@@ -95,7 +95,9 @@
             <children>
               <component id="eaf98" class="javax.swing.JList" binding="ScannedItemJList">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <font size="18"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
@@ -138,7 +140,9 @@
                 <children>
                   <component id="dc31" class="javax.swing.JList" binding="ItemSelectJList">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>

@@ -5,6 +5,7 @@ import controller.ProductDataManager;
 import controller.ScannedItemRenderer;
 import model.Product;
 import model.ScannedProduct;
+import model.ScannedProducts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +39,7 @@ public class UserGUI extends JFrame {
                 Float Price = ((Product)ItemSelectJList.getSelectedValue()).getPrice();
                 int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
-                if (Stock == 0){
+                if (Stock > 0){
                     //JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
                     AddProductToScanned(Barcode, Name, Img, Price);
                 } else{
@@ -78,37 +79,36 @@ public class UserGUI extends JFrame {
     }
     //TODO: Stop multiple of the same type of items from showing up in ScannedItemJList (make so it increases a count for quantity)
     public void AddProductToScanned(String barcode, String name, String img, float price){
+        ScannedListModel.clear();
         int quantityScanned = 1;
 
         ArrayList<ScannedProduct> allScanned = new ArrayList<>();
         //todo: change to new class allScanned
-        ScannedProduct Sc = new ScannedProduct();
+        ScannedProducts Sc = new ScannedProducts();
         allScanned = Sc.getAll();
-        for (ScannedProduct sP:allScanned) {
-            if (sP.getBarcode() == barcode){
-                quantityScanned = sP.getQuantityScanned() + 1;
-                //quantityScanned++;
-                sP.setQuantityScanned(quantityScanned);
-                break;
+        if (allScanned.isEmpty()){
+            ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
+            allScanned.add(tempProduct);
+
+        }else{
+            for (ScannedProduct sP:allScanned) {
+                if (sP.getBarcode() == barcode){
+                    quantityScanned = sP.getQuantityScanned() + 1;
+                    sP.setQuantityScanned(quantityScanned);
+                    break;
+                }
+            }
+            if (quantityScanned == 1){
+                ScannedProduct newScanned = new ScannedProduct(barcode, name, img, price, quantityScanned);
+                allScanned.add(newScanned);
             }
         }
 
-        if (quantityScanned == 1){
-            ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
-            ScannedListModel.addElement(tempProduct);
+        for (ScannedProduct i:allScanned) {
+            ScannedListModel.addElement(i);
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
             ScannedItemJList.setModel(ScannedListModel);
         }
-
-
-        //ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
-
-        //Product tempProduct = new Product(barcode, name, img, price, quantity);
-
-//        ScannedListModel.addElement(tempProduct);
-//
-//        ScannedItemJList.setCellRenderer(new ItemSelectRenderer());
-//        ScannedItemJList.setModel(ScannedListModel);
     }
 
 
