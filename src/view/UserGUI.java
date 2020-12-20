@@ -48,6 +48,42 @@ public class UserGUI extends JFrame {
 
             }
         });
+        ScannedItemJList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+//                super.mouseClicked(e);
+                //values
+                String barcode = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getBarcode();
+                String Name = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getName();
+                String Img = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getImage();
+                Float Price = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getPrice();
+                int QuantityScanned = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getQuantityScanned();
+
+                //TODO open option pain and ask if user wants to delete the selected item
+                int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item");
+                //if yes remove item/reduce quantity of item from array
+                if (response == 0){
+                    ScannedListModel.clear();
+                    //JOptionPane.showMessageDialog(null, response + " The item has been deleted");
+                    ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+                    ScannedProducts Sc = new ScannedProducts();
+                    allScanned = Sc.getAll();
+
+                    for (ScannedProduct sP:allScanned) {
+                        if (sP.getBarcode() == barcode){
+                            Sc.remove(sP);
+                            //JOptionPane.showMessageDialog(null, sP.getName());
+                            break;
+                        }
+                    }
+                    populateScannedJList(allScanned);
+
+                } else {
+                    //if no do nothing
+                    //JOptionPane.showMessageDialog(null, response+" Nothing has changed");
+                }
+            }
+        });
     }
 
     private void initialiseComponents(){
@@ -67,23 +103,19 @@ public class UserGUI extends JFrame {
         ProductDataManager dataManager = new ProductDataManager();
         dataManager.load();
         allProducts = dataManager.getAllProducts();
-
 //        //get products from products array and add them to listModel
         for (Product p:allProducts) {
             listModel.addElement(p);
         }
-
         //Render Images and text
         ItemSelectJList.setCellRenderer(new ItemSelectRenderer());
         ItemSelectJList.setModel(listModel);
     }
-    //TODO: Stop multiple of the same type of items from showing up in ScannedItemJList (make so it increases a count for quantity)
     public void AddProductToScanned(String barcode, String name, String img, float price){
         ScannedListModel.clear();
         int quantityScanned = 1;
 
         ArrayList<ScannedProduct> allScanned = new ArrayList<>();
-        //todo: change to new class allScanned
         ScannedProducts Sc = new ScannedProducts();
         allScanned = Sc.getAll();
         if (allScanned.isEmpty()){
@@ -103,7 +135,10 @@ public class UserGUI extends JFrame {
                 allScanned.add(newScanned);
             }
         }
+        populateScannedJList(allScanned);
+    }
 
+    public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
         for (ScannedProduct i:allScanned) {
             ScannedListModel.addElement(i);
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());

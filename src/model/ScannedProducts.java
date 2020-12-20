@@ -12,4 +12,16 @@ public class ScannedProducts {
     public void add(ScannedProduct newScan){
         allScanned.add(newScan);
     }
+
+    public void remove(ScannedProduct oldScan){
+        allScanned.remove(oldScan);
+    }
+
+    public ScannedProduct getScannedAt(int index){
+        if (index >= allScanned.size()){
+            return null;
+        }
+        return allScanned.get(index);
+    }
+
 }
