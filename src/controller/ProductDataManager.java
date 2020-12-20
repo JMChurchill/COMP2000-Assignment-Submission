@@ -37,7 +37,7 @@ public class ProductDataManager {
                 product.setPrice(priceToFloat);
 
                 int quantityToInt = Integer.parseInt(productData[4]);
-                product.setQuantity(quantityToInt);
+                product.setStock(quantityToInt);
 
                 products.add(product);
             }
@@ -68,7 +68,7 @@ public class ProductDataManager {
                 String priceToString = Float.toString(products.get(i).getPrice());
                 data += "|" + priceToString;
 
-                String QuantityToString = Integer.toString(products.get(i).getQuantity());
+                String QuantityToString = Integer.toString(products.get(i).getStock());
                 data += "|" + QuantityToString;
 
                 writer.write(data);

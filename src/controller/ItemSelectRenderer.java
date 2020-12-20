@@ -17,7 +17,7 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
         //assign value that is passed
         // TODO: make display different text for ScannedItemJList
         Product is = (Product) value;
-        setText(is.getName() + " Quantity Remaining: " + is.getQuantity() + " Price: £" + is.getPrice());
+        setText(is.getName() + " Quantity Remaining: " + is.getStock() + " Price: £" + is.getPrice());
 
         try {
             //convert string to url

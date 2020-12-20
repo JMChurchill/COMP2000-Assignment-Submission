@@ -2,7 +2,9 @@ package view;
 
 import controller.ItemSelectRenderer;
 import controller.ProductDataManager;
+import controller.ScannedItemRenderer;
 import model.Product;
+import model.ScannedProduct;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,16 +31,16 @@ public class UserGUI extends JFrame {
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                super.mouseClicked(e);
+                super.mouseClicked(e);
                 String Barcode = ((Product)ItemSelectJList.getSelectedValue()).getBarcode();
                 String Name = ((Product)ItemSelectJList.getSelectedValue()).getName();
                 String Img = ((Product)ItemSelectJList.getSelectedValue()).getImage();
                 Float Price = ((Product)ItemSelectJList.getSelectedValue()).getPrice();
-                int Quantity = ((Product)ItemSelectJList.getSelectedValue()).getQuantity();
+                int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
-                if (Quantity > 0){
+                if (Stock == 0){
                     //JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
-                    AddProductToScanned(Barcode, Name, Img, Price, Quantity);
+                    AddProductToScanned(Barcode, Name, Img, Price);
                 } else{
                     JOptionPane.showMessageDialog(null,"Sorry this Item is Out of Stock");
                 }
@@ -65,7 +67,7 @@ public class UserGUI extends JFrame {
         dataManager.load();
         allProducts = dataManager.getAllProducts();
 
-        //get products from products array and add them to listModel
+//        //get products from products array and add them to listModel
         for (Product p:allProducts) {
             listModel.addElement(p);
         }
@@ -75,14 +77,38 @@ public class UserGUI extends JFrame {
         ItemSelectJList.setModel(listModel);
     }
     //TODO: Stop multiple of the same type of items from showing up in ScannedItemJList (make so it increases a count for quantity)
-    public void AddProductToScanned(String barcode, String name, String img, float price,int quantity){
-        //listModel.clear();
-        Product tempProduct = new Product(barcode, name, img, price, quantity);
+    public void AddProductToScanned(String barcode, String name, String img, float price){
+        int quantityScanned = 1;
 
-        ScannedListModel.addElement(tempProduct);
+        ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+        //todo: change to new class allScanned
+        ScannedProduct Sc = new ScannedProduct();
+        allScanned = Sc.getAll();
+        for (ScannedProduct sP:allScanned) {
+            if (sP.getBarcode() == barcode){
+                quantityScanned = sP.getQuantityScanned() + 1;
+                //quantityScanned++;
+                sP.setQuantityScanned(quantityScanned);
+                break;
+            }
+        }
 
-        ScannedItemJList.setCellRenderer(new ItemSelectRenderer());
-        ScannedItemJList.setModel(ScannedListModel);
+        if (quantityScanned == 1){
+            ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
+            ScannedListModel.addElement(tempProduct);
+            ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
+            ScannedItemJList.setModel(ScannedListModel);
+        }
+
+
+        //ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
+
+        //Product tempProduct = new Product(barcode, name, img, price, quantity);
+
+//        ScannedListModel.addElement(tempProduct);
+//
+//        ScannedItemJList.setCellRenderer(new ItemSelectRenderer());
+//        ScannedItemJList.setModel(ScannedListModel);
     }
 
 
