@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+
 public class UserGUI extends JFrame {
     private JPanel mainPanel;
     private JLabel totalLbl;
@@ -23,11 +24,45 @@ public class UserGUI extends JFrame {
     private JList ItemSelectJList;
     private JLabel totalValueLbl;
     private JButton AdminLoginBtn;
+    private JPanel rightPanel;
+    private JPanel LeftPanel;
+    private JPanel itemSelectPanel;
+    private JPanel cardPaymentPanel;
+    private JPanel NumPadJPanel;
+    private JButton btn1;
+    private JButton btn2;
+    private JButton btn8;
+    private JButton btn7;
+    private JButton btn4;
+    private JButton btn6;
+    private JButton btn5;
+    private JButton btn9;
+    private JButton btnGo;
+    private JButton btn0;
+    private JButton btnBackspace;
+    private JButton btn3;
+    private JTextField tFieldPasswordTextField;
+    private JButton btnCancelCard;
+    private JPanel cashPaymentPanel;
+    private JTextField textFieldCashPaid;
+    private JButton btnCancelCash;
+
+    //for switching between jPanels
+    private CardLayout cl = new CardLayout();
+
 
     DefaultListModel listModel = new DefaultListModel();
     DefaultListModel ScannedListModel = new DefaultListModel();
 
     public UserGUI() {
+        //setup setLayout
+        rightPanel.setLayout(cl);
+        rightPanel.add(itemSelectPanel,"1");
+        rightPanel.add(cardPaymentPanel,"2");
+        rightPanel.add(cashPaymentPanel,"3");
+
+        cl.show(rightPanel,"1");
+
         initialiseComponents();
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
@@ -90,16 +125,24 @@ public class UserGUI extends JFrame {
                         options,options[2]);
                 //if cash
                 if (response == 0){
-                    //open new JForm for cash
-                        CardPaymentGUI page = new CardPaymentGUI();
-                        page.setVisible(true);
-
-
+                    //show cardPaymentPanel
+                    cl.show(rightPanel,"2");
                 } else if (response == 1){  //if card
-                    //open new JForm for card
-
+                    //show cashPaymentPanel
+                    cl.show(rightPanel,"3");
                 }
-
+            }
+        });
+        btnCancelCard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cl.show(rightPanel,"1");
+            }
+        });
+        btnCancelCash.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cl.show(rightPanel,"1");
             }
         });
     }
@@ -162,10 +205,8 @@ public class UserGUI extends JFrame {
 
 
 
-
     public static void main(String[] args) {
         UserGUI page = new UserGUI();
         page.setVisible(true);
-
     }
 }
