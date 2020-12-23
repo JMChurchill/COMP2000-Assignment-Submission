@@ -9,6 +9,8 @@ import model.ScannedProducts;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -53,16 +55,10 @@ public class UserGUI extends JFrame {
                 String barcode = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getBarcode();
                 int QuantityScanned;
 
-//                String Name = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getName();
-//                String Img = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getImage();
-//                Float Price = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getPrice();
-//                int QuantityScanned = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getQuantityScanned();
-
                 int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item");
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
                     ScannedListModel.clear();
-                    //JOptionPane.showMessageDialog(null, response + " The item has been deleted");
                     ArrayList<ScannedProduct> allScanned = new ArrayList<>();
                     ScannedProducts Sc = new ScannedProducts();
                     allScanned = Sc.getAll();
@@ -75,21 +71,38 @@ public class UserGUI extends JFrame {
                             }else{
                                 sP.setQuantityScanned(QuantityScanned - 1);
                             }
-
-
-                            //JOptionPane.showMessageDialog(null, sP.getName());
                             break;
                         }
                     }
                     populateScannedJList(allScanned);
-                } else {
-                    //if no do nothing
-                    //JOptionPane.showMessageDialog(null, response+" Nothing has changed");
                 }
             }
         });
-    }
+        finishBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO finish and pay function
+                //ScannedProducts usersProducts = new ScannedProducts();
 
+                Object[] options ={"Cash","Card","Cancel"};
+                int response = JOptionPane.showOptionDialog(null,"Would you Like to pay Cash or Card?",
+                        "Cash or Card", JOptionPane.YES_OPTION,JOptionPane.QUESTION_MESSAGE,null,
+                        options,options[2]);
+                //if cash
+                if (response == 0){
+                    //open new JForm for cash
+                        CardPaymentGUI page = new CardPaymentGUI();
+                        page.setVisible(true);
+
+
+                } else if (response == 1){  //if card
+                    //open new JForm for card
+
+                }
+
+            }
+        });
+    }
     private void initialiseComponents(){
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -139,7 +152,6 @@ public class UserGUI extends JFrame {
         }
         populateScannedJList(allScanned);
     }
-
     public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
         for (ScannedProduct i:allScanned) {
             ScannedListModel.addElement(i);
