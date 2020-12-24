@@ -68,6 +68,7 @@ public class ProductDataManager {
 
                 data += products.get(i).getImage();
 
+
                 String priceToString = Float.toString(products.get(i).getPrice());
                 data += "|" + priceToString;
 

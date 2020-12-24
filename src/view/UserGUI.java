@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class UserGUI extends JFrame {
@@ -41,7 +42,7 @@ public class UserGUI extends JFrame {
     private JButton btn0;
     private JButton btnBackspace;
     private JButton btn3;
-    private JTextField tFieldPasswordTextField;
+    private JTextField tFieldPin;
     private JButton btnCancelCard;
     private JPanel cashPaymentPanel;
     private JTextField textFieldCashPaid;
@@ -155,20 +156,19 @@ public class UserGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //todo card payment functions
                 //add up all scanned products prices
-
-                //check if pin correct
-
-                //take money from account
+                ProductDataManager pData = new ProductDataManager();
+                ScannedProducts products = new ScannedProducts();
+                float totalPrice = ScannedProducts.getTotalPrice();
+                //todo check if pin correct
+                String customersPin = tFieldPin.getText();
+                //todo take money from account
 
                 //subtract bought items from stock (in flat database)
-
+                updateStock(pData,products);
                 //ask if user wants receipt
-
-                //if yes display receipt in new window
-
-                //if no empty scanned item array and return to home
-
-
+                displayReceipt(false, products,0);
+                cl.show(rightPanel,"1");
+                clearScannedProducts(products.getAll());
             }
         });
         btnPayCash.addActionListener(new ActionListener() {
@@ -176,6 +176,8 @@ public class UserGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //todo cash payment functions
                 //add up all scanned products prices
+                ProductDataManager pData = new ProductDataManager();
+                ScannedProducts products = new ScannedProducts();
                 float totalPrice = ScannedProducts.getTotalPrice();
                 //get text from field
                 float totalPaid = Float.parseFloat(textFieldCashPaid.getText());
@@ -185,22 +187,11 @@ public class UserGUI extends JFrame {
 
                 if (changeDue>=0){
                     JOptionPane.showMessageDialog(null,"correct");
-                    updateStock();
+                    updateStock(pData,products);
                     //ask if user wants receipt
-                    int rQuestion = JOptionPane.showConfirmDialog(
-                            null,
-                            "Would you like a receipt?",
-                            "Receipt?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (rQuestion == 0){
-                        //if yes display receipt in new window
-
-                        //print receipt
-
-                    } else {
-                        //if no empty scanned item array and return to home
-
-                    }
+                    displayReceipt(true, products,totalPaid);
+                    cl.show(rightPanel,"1");
+                    clearScannedProducts(products.getAll());
                 } else{
                     JOptionPane.showMessageDialog(null,"Please insert more cash");
                 }
@@ -257,6 +248,7 @@ public class UserGUI extends JFrame {
         populateScannedJList(scannedArray.getAll());
     }
     public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
+
         for (ScannedProduct i:allScanned) {
             ScannedListModel.addElement(i);
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
@@ -264,13 +256,9 @@ public class UserGUI extends JFrame {
         }
          totalValueLbl.setText(String.valueOf(ScannedProducts.getTotalPrice()));
     }
-    public void updateStock(){
-        //todo subtract bought items from stock (in flat database)
-        ProductDataManager pData = new ProductDataManager();
-        ScannedProducts products = new ScannedProducts();
-        //todo swap loops
-        for (Product p:pData.getAllProducts()) {
-            for (ScannedProduct sP:products.getAll()) {
+    public void updateStock(ProductDataManager pData,ScannedProducts products){
+        for (ScannedProduct sP:products.getAll()) {
+            for (Product p:pData.getAllProducts()) {
                 if (p.getBarcode()==sP.getBarcode()){
                     p.setStock(p.getStock() - sP.getQuantityScanned());
                 }
@@ -278,7 +266,54 @@ public class UserGUI extends JFrame {
         }
         pData.save();
     }
+    public void clearScannedProducts(ArrayList<ScannedProduct> scannedArray){
+        scannedArray.clear();
+        ScannedListModel.clear();
+        populateScannedJList(scannedArray);
 
+    }
+    //todo create method to Receipt
+    public void displayReceipt(boolean isCash, ScannedProducts products,float totalPaid){
+        int rQuestion = JOptionPane.showConfirmDialog(
+                null,
+                "Would you like a receipt?",
+                "Receipt?",
+                JOptionPane.YES_NO_OPTION);
+        if (rQuestion == 0){
+            //if yes display receipt in new window
+            float price = 0;
+            float total = 0;
+
+            //create receipt message
+            String message ="<html><u>Receipt</u></html> \n";
+            for (ScannedProduct sp:products.getAll()) {
+                price = sp.getPrice() * sp.getQuantityScanned();
+                total += price;
+                message += sp.getName();
+                message += " x " + sp.getQuantityScanned() + " £" + price;
+                message += "\n";
+            }
+            message += "===========\n";
+            message += "Total: £" + total;
+
+            if (isCash){
+                float change = totalPaid - total;
+                message += "\n-----------\n";
+                message += "Cash: £" + totalPaid;
+                message += "\nChange: £" + change;
+            }
+
+            //display popup
+            JOptionPane.showMessageDialog(null,
+                    message,
+                    "Receipt",
+                    JOptionPane.PLAIN_MESSAGE);
+            //print receipt
+
+        } else {
+
+        }
+    }
 
     public static void main(String[] args) {
         UserGUI page = new UserGUI();
