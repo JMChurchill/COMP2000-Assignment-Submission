@@ -43,7 +43,7 @@
                 <properties>
                   <alignmentX value="1.0"/>
                   <alignmentY value="1.0"/>
-                  <font size="22"/>
+                  <font size="28"/>
                   <horizontalAlignment value="4"/>
                   <horizontalTextPosition value="4"/>
                   <text value="Total: "/>
@@ -56,8 +56,8 @@
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font size="22"/>
-                  <text value="Label"/>
+                  <font size="28"/>
+                  <text value="0"/>
                 </properties>
               </component>
             </children>
@@ -367,7 +367,7 @@
                   <text value="Cancel Payment"/>
                 </properties>
               </component>
-              <component id="f2f0" class="javax.swing.JButton" binding="btnPay">
+              <component id="f2f0" class="javax.swing.JButton" binding="btnPayCash">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>

@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProductDataManager {
-    public String filePath = "resources/ProductData.txt";
+//    public String filePath = "resources/ProductData.txt";
+    public String filePath = "resources/ProductDataTest.txt";
     public String separator = "\\|";
-
-    private final ArrayList<Product> products = new ArrayList<>();
+//may not be static
+    private static final ArrayList<Product> products = new ArrayList<>();
 
     //get data from ProductData
     public void load(){
@@ -60,8 +61,10 @@ public class ProductDataManager {
                 }
 
                 data += products.get(i).getBarcode();
+                data += "|";
 
                 data += products.get(i).getName();
+                data += "|";
 
                 data += products.get(i).getImage();
 
@@ -92,8 +95,8 @@ public class ProductDataManager {
         products.add(newProduct);
     }
 
-    public void removeUser(Product oldUser){
-        products.remove(oldUser);
+    public void removeProduct(Product oldProduct){
+        products.remove(oldProduct);
     }
 
     public ArrayList<Product> getAllProducts(){
