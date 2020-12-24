@@ -19,11 +19,11 @@ import java.util.ArrayList;
 public class UserGUI extends JFrame {
     private JPanel mainPanel;
     private JLabel totalLbl;
-    private JButton finishBtn;
+    private JButton btnFinish;
     private JList ScannedItemJList;
     private JList ItemSelectJList;
     private JLabel totalValueLbl;
-    private JButton AdminLoginBtn;
+    private JButton btnAdminLogin;
     private JPanel rightPanel;
     private JPanel LeftPanel;
     private JPanel itemSelectPanel;
@@ -46,6 +46,7 @@ public class UserGUI extends JFrame {
     private JPanel cashPaymentPanel;
     private JTextField textFieldCashPaid;
     private JButton btnCancelCash;
+    private JButton btnPay;
 
     //for switching between jPanels
     private CardLayout cl = new CardLayout();
@@ -113,21 +114,25 @@ public class UserGUI extends JFrame {
                 }
             }
         });
-        finishBtn.addActionListener(new ActionListener() {
+        btnFinish.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO finish and pay function
                 //ScannedProducts usersProducts = new ScannedProducts();
 
-                Object[] options ={"Cash","Card","Cancel"};
+                Object[] options ={"Card","Cash","Cancel"};
                 int response = JOptionPane.showOptionDialog(null,"Would you Like to pay Cash or Card?",
-                        "Cash or Card", JOptionPane.YES_OPTION,JOptionPane.QUESTION_MESSAGE,null,
+                        "Card or Cash", JOptionPane.YES_OPTION,JOptionPane.QUESTION_MESSAGE,null,
                         options,options[2]);
                 //if cash
-                if (response == 0){
+                if (response == 0){ //if card
+                    //todo check if items have been scanned
+
                     //show cardPaymentPanel
                     cl.show(rightPanel,"2");
-                } else if (response == 1){  //if card
+                } else if (response == 1){ //if cash
+                    //todo check if items have been scanned
+
                     //show cashPaymentPanel
                     cl.show(rightPanel,"3");
                 }
@@ -145,13 +150,36 @@ public class UserGUI extends JFrame {
                 cl.show(rightPanel,"1");
             }
         });
+        //press go on the card machine
+        btnGo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //todo card payment functions
+                //add up all scanned products prices
+
+                //check if pin correct
+
+                //take money from account
+
+                //subtract bought items from stock (in flat database)
+
+                //ask if user wants receipt
+
+                //if yes display receipt in new window
+
+                //if no empty scanned item array and return to home
+
+
+            }
+        });
     }
+
     private void initialiseComponents(){
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1500,800));
         setTitle("Checkout");
-//        ImageIcon image = new ImageIcon("");//create an image icon
+//        ImageIcon image = new ImageIcon(""); //create an image icon
 //        setIconImage(image.getImage()); //change icon of frame
         pack();
         populateListModel();
@@ -162,7 +190,7 @@ public class UserGUI extends JFrame {
         ProductDataManager dataManager = new ProductDataManager();
         dataManager.load();
         allProducts = dataManager.getAllProducts();
-//        //get products from products array and add them to listModel
+        //get products from products array and add them to listModel
         for (Product p:allProducts) {
             listModel.addElement(p);
         }
@@ -174,14 +202,38 @@ public class UserGUI extends JFrame {
         ScannedListModel.clear();
         int quantityScanned = 1;
 
-        ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+//        ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+//        ScannedProducts Sc = new ScannedProducts();
+//        allScanned = Sc.getAll();
+//        if (allScanned.isEmpty()){
+//            ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
+//            allScanned.add(tempProduct);
+//            //Sc.addProduct(tempProduct);
+//        }else{
+//            for (ScannedProduct sP:allScanned) {
+//                if (sP.getBarcode() == barcode){
+//                    quantityScanned = sP.getQuantityScanned() + 1;
+//                    sP.setQuantityScanned(quantityScanned);
+//                    break;
+//                }
+//            }
+//            if (quantityScanned == 1){
+//                ScannedProduct newScanned = new ScannedProduct(barcode, name, img, price, quantityScanned);
+//                allScanned.add(newScanned);
+//            }
+//        }
+//        populateScannedJList(allScanned);
+
+        //ArrayList<ScannedProduct> allScanned = new ArrayList<>();
         ScannedProducts Sc = new ScannedProducts();
-        allScanned = Sc.getAll();
-        if (allScanned.isEmpty()){
+        //allScanned = Sc.getAll();
+        if (Sc.getAll().isEmpty()){
             ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
-            allScanned.add(tempProduct);
+            //allScanned.add(tempProduct);
+            Sc.addProduct(tempProduct);
+            //Sc.addProduct(tempProduct);
         }else{
-            for (ScannedProduct sP:allScanned) {
+            for (ScannedProduct sP:Sc.getAll()) {
                 if (sP.getBarcode() == barcode){
                     quantityScanned = sP.getQuantityScanned() + 1;
                     sP.setQuantityScanned(quantityScanned);
@@ -190,10 +242,10 @@ public class UserGUI extends JFrame {
             }
             if (quantityScanned == 1){
                 ScannedProduct newScanned = new ScannedProduct(barcode, name, img, price, quantityScanned);
-                allScanned.add(newScanned);
+                Sc.addProduct(newScanned);
             }
         }
-        populateScannedJList(allScanned);
+        populateScannedJList(Sc.getAll());
     }
     public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
         for (ScannedProduct i:allScanned) {
@@ -201,6 +253,7 @@ public class UserGUI extends JFrame {
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
             ScannedItemJList.setModel(ScannedListModel);
         }
+         totalValueLbl.setText(String.valueOf(ScannedProducts.getTotalPrice()));
     }
 
 
