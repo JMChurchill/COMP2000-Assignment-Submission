@@ -16,9 +16,8 @@ public class ScannedItemRenderer extends DefaultListCellRenderer implements List
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         //return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         //assign value that is passed
-        // TODO: make display different text for ScannedItemJList
         ScannedProduct is = (ScannedProduct) value;
-        setText(is.getName() + "    Price: £" + is.getPrice() + "   X " + is.getQuantityScanned() + "   Total: " +(is.getQuantityScanned()*is.getPrice()));
+        setText(String.format(is.getName() + "    Price: £%.2f", is.getPrice()) + "   X " + is.getQuantityScanned() + String.format("   Total: £%.2f",(is.getQuantityScanned()*is.getPrice())));
 
         try{
             //convert string to url

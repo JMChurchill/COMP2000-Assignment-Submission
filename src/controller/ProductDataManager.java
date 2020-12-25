@@ -34,8 +34,8 @@ public class ProductDataManager {
 
                 product.setImage(productData[2]);
 
-                float priceToFloat = Float.parseFloat(productData[3]);
-                product.setPrice(priceToFloat);
+                double priceToDouble = Double.parseDouble(productData[3]);
+                product.setPrice(priceToDouble);
 
                 int quantityToInt = Integer.parseInt(productData[4]);
                 product.setStock(quantityToInt);
@@ -69,7 +69,7 @@ public class ProductDataManager {
                 data += products.get(i).getImage();
 
 
-                String priceToString = Float.toString(products.get(i).getPrice());
+                String priceToString = Double.toString(products.get(i).getPrice());
                 data += "|" + priceToString;
 
                 String QuantityToString = Integer.toString(products.get(i).getStock());

@@ -73,7 +73,7 @@ public class UserGUI extends JFrame {
                 String Barcode = ((Product)ItemSelectJList.getSelectedValue()).getBarcode();
                 String Name = ((Product)ItemSelectJList.getSelectedValue()).getName();
                 String Img = ((Product)ItemSelectJList.getSelectedValue()).getImage();
-                Float Price = ((Product)ItemSelectJList.getSelectedValue()).getPrice();
+                double Price = ((Product)ItemSelectJList.getSelectedValue()).getPrice();
                 int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
                 if (Stock > 0){
@@ -158,7 +158,7 @@ public class UserGUI extends JFrame {
                 //add up all scanned products prices
                 ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
-                float totalPrice = ScannedProducts.getTotalPrice();
+                double totalPrice = ScannedProducts.getTotalPrice();
                 //todo check if pin correct
                 String customersPin = tFieldPin.getText();
                 //todo take money from account
@@ -178,10 +178,10 @@ public class UserGUI extends JFrame {
                 //add up all scanned products prices
                 ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
-                float totalPrice = ScannedProducts.getTotalPrice();
+                double totalPrice = ScannedProducts.getTotalPrice();
                 //get text from field
-                float totalPaid = Float.parseFloat(textFieldCashPaid.getText());
-                float changeDue = totalPaid-totalPrice;
+                double totalPaid = Double.parseDouble(textFieldCashPaid.getText());
+                double changeDue = totalPaid-totalPrice;
 
                 JOptionPane.showMessageDialog(null,"total paid: "+totalPaid + " total price: "+totalPrice + " Change Due: "+changeDue);
 
@@ -224,7 +224,7 @@ public class UserGUI extends JFrame {
         ItemSelectJList.setCellRenderer(new ItemSelectRenderer());
         ItemSelectJList.setModel(listModel);
     }
-    public void AddProductToScanned(String barcode, String name, String img, float price){
+    public void AddProductToScanned(String barcode, String name, String img, double price){
         ScannedListModel.clear();
         int quantityScanned = 1;
 
@@ -254,7 +254,7 @@ public class UserGUI extends JFrame {
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
             ScannedItemJList.setModel(ScannedListModel);
         }
-         totalValueLbl.setText(String.valueOf(ScannedProducts.getTotalPrice()));
+         totalValueLbl.setText(String.format("£%.2f",ScannedProducts.getTotalPrice()));
     }
     public void updateStock(ProductDataManager pData,ScannedProducts products){
         for (ScannedProduct sP:products.getAll()) {
@@ -272,8 +272,7 @@ public class UserGUI extends JFrame {
         populateScannedJList(scannedArray);
 
     }
-    //todo create method to Receipt
-    public void displayReceipt(boolean isCash, ScannedProducts products,float totalPaid){
+    public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
         int rQuestion = JOptionPane.showConfirmDialog(
                 null,
                 "Would you like a receipt?",
@@ -281,8 +280,8 @@ public class UserGUI extends JFrame {
                 JOptionPane.YES_NO_OPTION);
         if (rQuestion == 0){
             //if yes display receipt in new window
-            float price = 0;
-            float total = 0;
+            double price = 0;
+            double total = 0;
 
             //create receipt message
             String message ="<html><u>Receipt</u></html> \n";
@@ -290,17 +289,17 @@ public class UserGUI extends JFrame {
                 price = sp.getPrice() * sp.getQuantityScanned();
                 total += price;
                 message += sp.getName();
-                message += " x " + sp.getQuantityScanned() + " £" + price;
+                message += String.format(" x " + sp.getQuantityScanned() + " £%.2f", price);
                 message += "\n";
             }
             message += "===========\n";
-            message += "Total: £" + total;
+            message += String.format("Total: £%.2f", total);
 
             if (isCash){
-                float change = totalPaid - total;
+                double change = totalPaid - total;
                 message += "\n-----------\n";
-                message += "Cash: £" + totalPaid;
-                message += "\nChange: £" + change;
+                message += String.format("Cash: £%.2f", totalPaid);
+                message += String.format("\nChange: £%.2f", change);
             }
 
             //display popup

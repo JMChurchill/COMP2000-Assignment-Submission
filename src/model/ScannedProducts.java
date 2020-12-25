@@ -28,8 +28,8 @@ public class ScannedProducts {
         return allScanned.get(index);
     }
 
-    public static float getTotalPrice(){
-        float totalPrice = 0;
+    public static double getTotalPrice(){
+        double totalPrice = 0;
         if (allScanned.isEmpty()){
             totalPrice = 0;
         }else{

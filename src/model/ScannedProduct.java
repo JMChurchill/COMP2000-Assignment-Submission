@@ -6,12 +6,12 @@ public class ScannedProduct {
     private String Barcode;
     private String Name;
     private String Image;
-    private float Price;
+    private double Price;
     private int QuantityScanned;
 
     public ScannedProduct(){}
 
-    public ScannedProduct(String barcode, String name, String image, float price, int quantityScanned) {
+    public ScannedProduct(String barcode, String name, String image, double price, int quantityScanned) {
         Barcode = barcode;
         Name = name;
         Image = image;
@@ -45,11 +45,11 @@ public class ScannedProduct {
         Image = image;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return Price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         Price = price;
     }
 
