@@ -14,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class UserGUI extends JFrame {
@@ -48,22 +47,22 @@ public class UserGUI extends JFrame {
     private JTextField textFieldCashPaid;
     private JButton btnCancelCash;
     private JButton btnPayCash;
+    private JLabel lblRemaining;
 
     //for switching between jPanels
-    private final CardLayout cl = new CardLayout();
-
+    private final CardLayout rightCl = new CardLayout();
 
     DefaultListModel listModel = new DefaultListModel();
     DefaultListModel ScannedListModel = new DefaultListModel();
 
     public UserGUI() {
         //setup setLayout
-        rightPanel.setLayout(cl);
+        rightPanel.setLayout(rightCl);
         rightPanel.add(itemSelectPanel,"1");
         rightPanel.add(cardPaymentPanel,"2");
         rightPanel.add(cashPaymentPanel,"3");
 
-        cl.show(rightPanel,"1");
+        rightCl.show(rightPanel,"1");
 
         initialiseComponents();
         ItemSelectJList.addMouseListener(new MouseAdapter() {
@@ -128,10 +127,10 @@ public class UserGUI extends JFrame {
                     //if cash
                     if (response == 0){ //if card
                         //show cardPaymentPanel
-                        cl.show(rightPanel,"2");
+                        rightCl.show(rightPanel,"2");
                     } else if (response == 1){ //if cash
                         //show cashPaymentPanel
-                        cl.show(rightPanel,"3");
+                        rightCl.show(rightPanel,"3");
                     }
                 }else{
                     JOptionPane.showMessageDialog(null,"Please scan an item");
@@ -141,13 +140,13 @@ public class UserGUI extends JFrame {
         btnCancelCard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cl.show(rightPanel,"1");
+                rightCl.show(rightPanel,"1");
             }
         });
         btnCancelCash.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cl.show(rightPanel,"1");
+                rightCl.show(rightPanel,"1");
             }
         });
         //press go on the card machine
@@ -159,38 +158,41 @@ public class UserGUI extends JFrame {
                 ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
                 double totalPrice = ScannedProducts.getTotalPrice();
-                //todo check if pin correct
+                //todo check if pin correct -> contact card payment api -> if pin correct take money from account and return true
                 String customersPin = tFieldPin.getText();
-                //todo take money from account
-
                 //subtract bought items from stock (in flat database)
                 updateStock(pData,products);
                 //ask if user wants receipt
                 displayReceipt(false, products,0);
-                cl.show(rightPanel,"1");
+                rightCl.show(rightPanel,"1");
                 clearScannedProducts(products.getAll());
             }
         });
         btnPayCash.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                double totalPaid;
                 //todo cash payment functions
                 //add up all scanned products prices
                 ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
                 double totalPrice = ScannedProducts.getTotalPrice();
                 //get text from field
-                double totalPaid = Double.parseDouble(textFieldCashPaid.getText());
+                try {
+                    totalPaid = Double.parseDouble(textFieldCashPaid.getText());
+                } catch (Exception ex){
+                    totalPaid = 0;
+                }
                 double changeDue = totalPaid-totalPrice;
 
                 JOptionPane.showMessageDialog(null,"total paid: "+totalPaid + " total price: "+totalPrice + " Change Due: "+changeDue);
-
+                //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
                 if (changeDue>=0){
                     JOptionPane.showMessageDialog(null,"correct");
                     updateStock(pData,products);
                     //ask if user wants receipt
                     displayReceipt(true, products,totalPaid);
-                    cl.show(rightPanel,"1");
+                    rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
                 } else{
                     JOptionPane.showMessageDialog(null,"Please insert more cash");
@@ -248,7 +250,6 @@ public class UserGUI extends JFrame {
         populateScannedJList(scannedArray.getAll());
     }
     public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
-
         for (ScannedProduct i:allScanned) {
             ScannedListModel.addElement(i);
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
@@ -270,7 +271,6 @@ public class UserGUI extends JFrame {
         scannedArray.clear();
         ScannedListModel.clear();
         populateScannedJList(scannedArray);
-
     }
     public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
         int rQuestion = JOptionPane.showConfirmDialog(
@@ -282,9 +282,9 @@ public class UserGUI extends JFrame {
             //if yes display receipt in new window
             double price = 0;
             double total = 0;
-
             //create receipt message
             String message ="<html><u>Receipt</u></html> \n";
+
             for (ScannedProduct sp:products.getAll()) {
                 price = sp.getPrice() * sp.getQuantityScanned();
                 total += price;
@@ -301,16 +301,11 @@ public class UserGUI extends JFrame {
                 message += String.format("Cash: £%.2f", totalPaid);
                 message += String.format("\nChange: £%.2f", change);
             }
-
             //display popup
             JOptionPane.showMessageDialog(null,
                     message,
                     "Receipt",
                     JOptionPane.PLAIN_MESSAGE);
-            //print receipt
-
-        } else {
-
         }
     }
 

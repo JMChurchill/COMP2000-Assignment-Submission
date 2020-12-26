@@ -31,15 +31,13 @@ public class ScannedItemRenderer extends DefaultListCellRenderer implements List
             setIcon(new ImageIcon(img));
 //            setIcon(new ImageIcon(urlToImg));
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
         //set background and foreground colours to custom list row
-        if (isSelected) {
+        if(isSelected){
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());
         } else {
