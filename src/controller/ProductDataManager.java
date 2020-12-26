@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProductDataManager {
-    public String filePath = "resources/ProductData.txt";
+//    public String filePath = "resources/ProductData.txt";
+    public String filePath = "resources/ProductDataTest.txt";
     public String separator = "\\|";
-
-    private final ArrayList<Product> products = new ArrayList<>();
+//may not be static
+    private static final ArrayList<Product> products = new ArrayList<>();
 
     //get data from ProductData
     public void load(){
@@ -33,11 +34,11 @@ public class ProductDataManager {
 
                 product.setImage(productData[2]);
 
-                float priceToFloat = Float.parseFloat(productData[3]);
-                product.setPrice(priceToFloat);
+                double priceToDouble = Double.parseDouble(productData[3]);
+                product.setPrice(priceToDouble);
 
                 int quantityToInt = Integer.parseInt(productData[4]);
-                product.setQuantity(quantityToInt);
+                product.setStock(quantityToInt);
 
                 products.add(product);
             }
@@ -60,15 +61,18 @@ public class ProductDataManager {
                 }
 
                 data += products.get(i).getBarcode();
+                data += "|";
 
                 data += products.get(i).getName();
+                data += "|";
 
                 data += products.get(i).getImage();
 
-                String priceToString = Float.toString(products.get(i).getPrice());
+
+                String priceToString = Double.toString(products.get(i).getPrice());
                 data += "|" + priceToString;
 
-                String QuantityToString = Integer.toString(products.get(i).getQuantity());
+                String QuantityToString = Integer.toString(products.get(i).getStock());
                 data += "|" + QuantityToString;
 
                 writer.write(data);
@@ -92,8 +96,8 @@ public class ProductDataManager {
         products.add(newProduct);
     }
 
-    public void removeUser(Product oldUser){
-        products.remove(oldUser);
+    public void removeProduct(Product oldProduct){
+        products.remove(oldProduct);
     }
 
     public ArrayList<Product> getAllProducts(){

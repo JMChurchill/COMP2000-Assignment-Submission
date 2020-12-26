@@ -1,29 +1,32 @@
 package model;
 
-public class Product {
+import java.util.ArrayList;
 
-
+public class ScannedProduct {
     private String Barcode;
     private String Name;
     private String Image;
     private double Price;
-    private int Stock;
-    public Product() {}
+    private int QuantityScanned;
 
-    public Product(String barcode,String name, String image, double price, int quantity) {
+    public ScannedProduct(){}
+
+    public ScannedProduct(String barcode, String name, String image, double price, int quantityScanned) {
         Barcode = barcode;
         Name = name;
         Image = image;
         Price = price;
-        Stock = quantity;
+        QuantityScanned = quantityScanned;
     }
+
+//    private static final ArrayList<ScannedProduct> allScanned = new ArrayList<>();
 
     public String getBarcode() {
         return Barcode;
     }
 
     public void setBarcode(String barcode) {
-        this.Barcode = barcode;
+        Barcode = barcode;
     }
 
     public String getName() {
@@ -50,12 +53,16 @@ public class Product {
         Price = price;
     }
 
-    public int getStock() {
-        return Stock;
+    public int getQuantityScanned() {
+        return QuantityScanned;
     }
 
-    public void setStock(int stock) {
-        Stock = stock;
+    public void setQuantityScanned(int quantityScanned) {
+        QuantityScanned = quantityScanned;
     }
+
+//    public ArrayList<ScannedProduct> getAll(){
+//        return allScanned;
+//    }
 
 }

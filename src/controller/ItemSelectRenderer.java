@@ -15,9 +15,8 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus){
         //return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         //assign value that is passed
-
         Product is = (Product) value;
-        setText(is.getName() + " Quantity Remaining: " + is.getQuantity() + " Price: £" + is.getPrice());
+        setText(is.getName() + " Quantity Remaining: " + is.getStock() + String.format(" Price: £%.2f", is.getPrice()));
 
         try {
             //convert string to url
@@ -27,7 +26,7 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
             //calculate new width given height = 220
             int newWidth = calcNewWidth(urlToImg);
             //resize image
-            BufferedImage img = resizeImg(newWidth,180,urlToImg);
+            BufferedImage img = resizeImg(newWidth,100,urlToImg);
 
             setIcon(new ImageIcon(img));
 
@@ -68,7 +67,7 @@ public class ItemSelectRenderer extends DefaultListCellRenderer implements ListC
     private int calcNewWidth(Image img){
         float currentWidth = img.getWidth(null);
         float currentHeight = img.getHeight(null);
-        int newHeight = 180;
+        int newHeight = 100;
         int newWidth = Math.round(newHeight/(currentHeight/currentWidth));
         return newWidth;
     }
