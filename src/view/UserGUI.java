@@ -44,7 +44,7 @@ public class UserGUI extends JFrame {
     private JTextField tFieldPin;
     private JButton btnCancelCard;
     private JPanel cashPaymentPanel;
-    private JTextField textFieldCashPaid;
+    private JTextField tFieldCashPaid;
     private JButton btnCancelCash;
     private JButton btnPayCash;
     private JLabel lblRemaining;
@@ -52,13 +52,16 @@ public class UserGUI extends JFrame {
     private JPanel adminPanel;
     private JTextField tFieldUserName;
     private JTextField tFieldPassword;
-    private JPanel LoginPanel;
+    private JPanel loginPanel;
     private JPanel interfacePanel;
     private JButton btnLogin;
+    private JPanel adminViewPanel;
 
     //for switching between jPanels
     private final CardLayout interfaceCl = new CardLayout();
     private final CardLayout rightCl = new CardLayout();
+    private final CardLayout adminCl = new CardLayout();
+
 
     DefaultListModel listModel = new DefaultListModel();
     DefaultListModel ScannedListModel = new DefaultListModel();
@@ -78,6 +81,13 @@ public class UserGUI extends JFrame {
         rightPanel.add(cashPaymentPanel,"3");
 
         rightCl.show(rightPanel,"1");
+
+        //setup adminInterfaces
+        adminPanel.setLayout(adminCl);
+        adminPanel.add(loginPanel,"1");
+        adminPanel.add(adminViewPanel,"2");
+
+        adminCl.show(adminPanel,"1");
 
         initialiseComponents();
         ItemSelectJList.addMouseListener(new MouseAdapter() {
@@ -194,7 +204,7 @@ public class UserGUI extends JFrame {
                 double totalPrice = ScannedProducts.getTotalPrice();
                 //get text from field
                 try {
-                    totalPaid = Double.parseDouble(textFieldCashPaid.getText());
+                    totalPaid = Double.parseDouble(tFieldCashPaid.getText());
                 } catch (Exception ex){
                     totalPaid = 0;
                 }
@@ -220,6 +230,26 @@ public class UserGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 interfaceCl.show(interfacePanel,"2");
+            }
+        });
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isFound = true; //todo change to false
+                //get inputs
+                String userName = tFieldUserName.getText();
+                String password = tFieldPassword.getText();
+                //hash password
+
+                //search flat database for user with matching username and password -> if found return true
+                if (isFound){
+                    //show admin database view
+                    adminCl.show(adminPanel,"2");
+                }else {
+                    //else return wrong password message
+                }
+
+
             }
         });
     }
