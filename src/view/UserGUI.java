@@ -48,15 +48,30 @@ public class UserGUI extends JFrame {
     private JButton btnCancelCash;
     private JButton btnPayCash;
     private JLabel lblRemaining;
+    private JPanel userPanel;
+    private JPanel adminPanel;
+    private JTextField tFieldUserName;
+    private JTextField tFieldPassword;
+    private JPanel LoginPanel;
+    private JPanel interfacePanel;
+    private JButton btnLogin;
 
     //for switching between jPanels
+    private final CardLayout interfaceCl = new CardLayout();
     private final CardLayout rightCl = new CardLayout();
 
     DefaultListModel listModel = new DefaultListModel();
     DefaultListModel ScannedListModel = new DefaultListModel();
 
     public UserGUI() {
-        //setup setLayout
+        //setup Interface
+        interfacePanel.setLayout(interfaceCl);
+        interfacePanel.add(userPanel,"1");
+        interfacePanel.add(adminPanel,"2");
+
+        interfaceCl.show(interfacePanel,"1");
+
+        //setup rightPanel
         rightPanel.setLayout(rightCl);
         rightPanel.add(itemSelectPanel,"1");
         rightPanel.add(cardPaymentPanel,"2");
@@ -198,6 +213,13 @@ public class UserGUI extends JFrame {
                     JOptionPane.showMessageDialog(null,"Please insert more cash");
                 }
 
+            }
+        });
+        //todo add login functionality
+        btnAdminLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                interfaceCl.show(interfacePanel,"2");
             }
         });
     }
