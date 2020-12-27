@@ -56,6 +56,36 @@ public class UserGUI extends JFrame {
     private JPanel interfacePanel;
     private JButton btnLogin;
     private JPanel adminViewPanel;
+    private JButton btnExitAdmin;
+    private JPanel leftAdPanel;
+    private JPanel rightAdPanel;
+    private JTabbedPane leftTabbedPane;
+    private JPanel detailsPanel;
+    private JPanel editDetailsPanel;
+    private JButton btnExitAdmin2;
+    private JButton btnNewOrder;
+    private JButton btnItemDetails;
+    private JPanel OrderPanel;
+    private JTextField tFieldEditName;
+    private JTextField tFieldEditBarcode;
+    private JTextField tFieldEditStock;
+    private JTextField tFieldEditPrice;
+    private JTextField tFieldEditImg;
+    private JButton btnExitBack;
+    private JButton btnEditConfirm;
+    private JTextField tFieldNumOrder;
+    private JButton btnOrderingBack;
+    private JButton btnOrderProduct;
+    private JLabel lblDetailsIName;
+    private JLabel lblDetailsBarcode;
+    private JLabel lblDetailsStock;
+    private JLabel lblDetailsPrice;
+    private JLabel lblOrderName;
+    private JLabel lblOrderBarcode;
+    private JLabel lblOrderSoldPrice;
+    private JLabel lblOrderCurStock;
+    private JLabel lblOrderCostPProd;
+    private JLabel lblOrderTotal;
 
     //for switching between jPanels
     private final CardLayout interfaceCl = new CardLayout();
@@ -222,16 +252,15 @@ public class UserGUI extends JFrame {
                 } else{
                     JOptionPane.showMessageDialog(null,"Please insert more cash");
                 }
-
             }
         });
-        //todo add login functionality
         btnAdminLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 interfaceCl.show(interfacePanel,"2");
             }
         });
+        //todo add login functionality
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -239,17 +268,31 @@ public class UserGUI extends JFrame {
                 //get inputs
                 String userName = tFieldUserName.getText();
                 String password = tFieldPassword.getText();
-                //hash password
+                //todo hash password
 
-                //search flat database for user with matching username and password -> if found return true
+                //todo search flat database for user with matching username and password -> if found return true
+
                 if (isFound){
                     //show admin database view
                     adminCl.show(adminPanel,"2");
                 }else {
                     //else return wrong password message
+                    JOptionPane.showMessageDialog(null,"Unable to login please try again");
                 }
 
 
+            }
+        });
+        btnExitAdmin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                interfaceCl.show(interfacePanel,"1");
+            }
+        });
+        btnExitAdmin2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                interfaceCl.show(interfacePanel,"1");
             }
         });
     }
