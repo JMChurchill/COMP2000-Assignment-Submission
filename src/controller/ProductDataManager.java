@@ -100,7 +100,7 @@ public class ProductDataManager {
         products.remove(oldProduct);
     }
 
-    public ArrayList<Product> getAllProducts(){
+    public static ArrayList<Product> getAllProducts(){
         return products;
     }
 }

@@ -23,7 +23,7 @@ public class UserGUI extends JFrame {
     private JList ScannedItemJList;
     private JList ItemSelectJList;
     private JLabel totalValueLbl;
-    private JButton btnAdminLogin;
+    private JButton btnAdminView;
     private JPanel rightPanel;
     private JPanel LeftPanel;
     private JPanel itemSelectPanel;
@@ -86,6 +86,8 @@ public class UserGUI extends JFrame {
     private JLabel lblOrderCurStock;
     private JLabel lblOrderCostPProd;
     private JLabel lblOrderTotal;
+    private JList jListAllProducts;
+    private JList jListLowStock;
 
     //for switching between jPanels
     private final CardLayout interfaceCl = new CardLayout();
@@ -96,6 +98,9 @@ public class UserGUI extends JFrame {
 
     DefaultListModel listModel = new DefaultListModel();
     DefaultListModel ScannedListModel = new DefaultListModel();
+    DefaultListModel allListModel = new DefaultListModel();
+    DefaultListModel lowStockListModel = new DefaultListModel();
+
 
     public UserGUI() {
         //setup Interface
@@ -250,7 +255,7 @@ public class UserGUI extends JFrame {
                 }
                 double changeDue = totalPaid-totalPrice;
 
-                JOptionPane.showMessageDialog(null,"total paid: "+totalPaid + " total price: "+totalPrice + " Change Due: "+changeDue);
+                JOptionPane.showMessageDialog(null,"total paid: " + totalPaid + " total price: " + totalPrice + " Change Due: " + changeDue);
                 //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
                 if (changeDue>=0){
                     JOptionPane.showMessageDialog(null,"correct");
@@ -264,7 +269,7 @@ public class UserGUI extends JFrame {
                 }
             }
         });
-        btnAdminLogin.addActionListener(new ActionListener() {
+        btnAdminView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 interfaceCl.show(interfacePanel,"2");
@@ -285,6 +290,26 @@ public class UserGUI extends JFrame {
                 if (isFound){
                     //show admin database view
                     adminCl.show(adminPanel,"2");
+                    //populate all products
+                    allListModel.clear();
+                    lowStockListModel.clear();
+                    //get products from products array and add them to listModel
+                    for (Product p: ProductDataManager.getAllProducts()) {
+                        allListModel.addElement(p);
+                        //if stock less than 20 add to lowStock
+                        if (p.getStock()<=20){
+                            lowStockListModel.addElement(p);
+                        }
+                    }
+                    //Render Images and text
+                    //low stock
+                    jListLowStock.setCellRenderer(new ItemSelectRenderer());
+                    jListLowStock.setModel(lowStockListModel);
+                    //all
+                    jListAllProducts.setCellRenderer(new ItemSelectRenderer());
+                    jListAllProducts.setModel(allListModel);
+                    //populate low stock
+
                 }else {
                     //else return wrong password message
                     JOptionPane.showMessageDialog(null,"Unable to login please try again");
@@ -345,12 +370,10 @@ public class UserGUI extends JFrame {
     }
     public void populateListModel(){
         listModel.clear();
-        ArrayList<Product> allProducts = new ArrayList<>();
         ProductDataManager dataManager = new ProductDataManager();
         dataManager.load();
-        allProducts = dataManager.getAllProducts();
         //get products from products array and add them to listModel
-        for (Product p:allProducts) {
+        for (Product p:ProductDataManager.getAllProducts()) {
             listModel.addElement(p);
         }
         //Render Images and text
@@ -388,9 +411,10 @@ public class UserGUI extends JFrame {
         }
          totalValueLbl.setText(String.format("£%.2f",ScannedProducts.getTotalPrice()));
     }
+    //todo convert function so does not need pData
     public void updateStock(ProductDataManager pData,ScannedProducts products){
         for (ScannedProduct sP:products.getAll()) {
-            for (Product p:pData.getAllProducts()) {
+            for (Product p: ProductDataManager.getAllProducts()) {
                 if (p.getBarcode()==sP.getBarcode()){
                     p.setStock(p.getStock() - sP.getQuantityScanned());
                 }
