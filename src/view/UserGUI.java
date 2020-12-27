@@ -64,7 +64,7 @@ public class UserGUI extends JFrame {
     private JPanel editDetailsPanel;
     private JButton btnExitAdmin2;
     private JButton btnNewOrder;
-    private JButton btnItemDetails;
+    private JButton btnEditDetailsV;
     private JPanel orderPanel;
     private JTextField tFieldEditName;
     private JTextField tFieldEditBarcode;
@@ -76,7 +76,7 @@ public class UserGUI extends JFrame {
     private JTextField tFieldNumOrder;
     private JButton btnOrderingBack;
     private JButton btnOrderProduct;
-    private JLabel lblDetailsIName;
+    private JLabel lblDetailsName;
     private JLabel lblDetailsBarcode;
     private JLabel lblDetailsStock;
     private JLabel lblDetailsPrice;
@@ -314,8 +314,6 @@ public class UserGUI extends JFrame {
                     //else return wrong password message
                     JOptionPane.showMessageDialog(null,"Unable to login please try again");
                 }
-
-
             }
         });
         btnExitAdmin.addActionListener(new ActionListener() {
@@ -334,12 +332,20 @@ public class UserGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rightAdCl.show(rightAdPanel,"3");
+
             }
         });
-        btnItemDetails.addActionListener(new ActionListener() {
+        btnEditDetailsV.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rightAdCl.show(rightAdPanel,"2");
+                //todo move to separate function
+                String name = lblDetailsName.getText();
+                String barcode = lblDetailsBarcode.getText().replaceAll("\\D+","");
+                int stock = Integer.parseInt(lblDetailsStock.getText().replaceAll("\\D+",""));
+                double price = Double.parseDouble(lblDetailsPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+                //todo add photo
+                populateEditView(name,barcode,stock,price);
             }
         });
         btnExitBack.addActionListener(new ActionListener() {
@@ -353,7 +359,34 @@ public class UserGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rightAdCl.show(rightAdPanel,"1");
+            }
+        });
+        jListLowStock.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                String Barcode = ((Product)jListLowStock.getSelectedValue()).getBarcode();
+                String Name = ((Product)jListLowStock.getSelectedValue()).getName();
+                String Img = ((Product)jListLowStock.getSelectedValue()).getImage();
+                double Price = ((Product)jListLowStock.getSelectedValue()).getPrice();
+                int Stock = ((Product)jListLowStock.getSelectedValue()).getStock();
 
+                displayProductDetails(Barcode,Name,Img,Price,Stock);
+
+
+            }
+        });
+        jListAllProducts.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                String Barcode = ((Product)jListAllProducts.getSelectedValue()).getBarcode();
+                String Name = ((Product)jListAllProducts.getSelectedValue()).getName();
+                String Img = ((Product)jListAllProducts.getSelectedValue()).getImage();
+                double Price = ((Product)jListAllProducts.getSelectedValue()).getPrice();
+                int Stock = ((Product)jListAllProducts.getSelectedValue()).getStock();
+
+                displayProductDetails(Barcode,Name,Img,Price,Stock);
             }
         });
     }
@@ -462,6 +495,21 @@ public class UserGUI extends JFrame {
                     "Receipt",
                     JOptionPane.PLAIN_MESSAGE);
         }
+    }
+
+    public void displayProductDetails(String Barcode, String Name, String Img, double Price, int Stock){
+        lblDetailsName.setText(Name);
+        lblDetailsBarcode.setText("Barcode: " + Barcode);
+        lblDetailsStock.setText("Stock: " + Stock);
+        lblDetailsPrice.setText(String.format("Price: £%.2f", Price));
+        //todo display img
+    }
+    public void populateEditView(String name,String barcode,int stock,double price){
+        tFieldEditName.setText(name);
+        tFieldEditBarcode.setText(barcode);
+        tFieldEditStock.setText(String.valueOf(stock));
+        tFieldEditPrice.setText(String.valueOf(price));
+
     }
 
     public static void main(String[] args) {
