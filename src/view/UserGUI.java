@@ -65,7 +65,7 @@ public class UserGUI extends JFrame {
     private JButton btnExitAdmin2;
     private JButton btnNewOrder;
     private JButton btnItemDetails;
-    private JPanel OrderPanel;
+    private JPanel orderPanel;
     private JTextField tFieldEditName;
     private JTextField tFieldEditBarcode;
     private JTextField tFieldEditStock;
@@ -91,6 +91,7 @@ public class UserGUI extends JFrame {
     private final CardLayout interfaceCl = new CardLayout();
     private final CardLayout rightCl = new CardLayout();
     private final CardLayout adminCl = new CardLayout();
+    private final CardLayout rightAdCl = new CardLayout();
 
 
     DefaultListModel listModel = new DefaultListModel();
@@ -118,6 +119,15 @@ public class UserGUI extends JFrame {
         adminPanel.add(adminViewPanel,"2");
 
         adminCl.show(adminPanel,"1");
+
+        //setup  rightAdPanel
+        rightAdPanel.setLayout(rightAdCl);
+        rightAdPanel.add(detailsPanel,"1");
+        rightAdPanel.add(editDetailsPanel,"2");
+        rightAdPanel.add(orderPanel,"3");
+
+        rightAdCl.show(rightAdPanel,"1");
+
 
         initialiseComponents();
         ItemSelectJList.addMouseListener(new MouseAdapter() {
@@ -293,6 +303,32 @@ public class UserGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 interfaceCl.show(interfacePanel,"1");
+            }
+        });
+        btnNewOrder.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rightAdCl.show(rightAdPanel,"3");
+            }
+        });
+        btnItemDetails.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rightAdCl.show(rightAdPanel,"2");
+            }
+        });
+        btnExitBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rightAdCl.show(rightAdPanel,"1");
+            }
+        });
+
+        btnOrderingBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rightAdCl.show(rightAdPanel,"1");
+
             }
         });
     }
