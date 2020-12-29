@@ -511,9 +511,4 @@ public class UserGUI extends JFrame {
         tFieldEditPrice.setText(String.valueOf(price));
 
     }
-
-    public static void main(String[] args) {
-        UserGUI page = new UserGUI();
-        page.setVisible(true);
-    }
 }
