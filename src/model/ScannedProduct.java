@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-public class ScannedProduct {
+public class ScannedProduct {//make extend product
     private String Barcode;
     private String Name;
     private String Image;

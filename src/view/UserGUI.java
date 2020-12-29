@@ -66,14 +66,14 @@ public class UserGUI extends JFrame {
     private JButton btnNewOrder;
     private JButton btnEditDetailsV;
     private JPanel orderPanel;
-    private JTextField tFieldEditName;
-    private JTextField tFieldEditBarcode;
-    private JTextField tFieldEditStock;
-    private JTextField tFieldEditPrice;
-    private JTextField tFieldEditImg;
-    private JButton btnExitBack;
-    private JButton btnEditConfirm;
-    private JTextField tFieldNumOrder;
+    private JTextField tFEditName;
+    private JTextField tFEditBarcode;
+    private JTextField tFEditStock;
+    private JTextField tFEditPrice;
+    private JTextField tFEditImg;
+    private JButton btnBackEdit;
+    private JButton btnConfirmEdit;
+    private JTextField tFNumOrder;
     private JButton btnOrderingBack;
     private JButton btnOrderProduct;
     private JLabel lblDetailsName;
@@ -170,7 +170,7 @@ public class UserGUI extends JFrame {
                     allScanned = Sc.getAll();
 
                     for (ScannedProduct sP:allScanned) {
-                        if (sP.getBarcode() == barcode){
+                        if (sP.getBarcode().equals(barcode)){
                             QuantityScanned = sP.getQuantityScanned();
                             if(QuantityScanned == 1){
                                 Sc.remove(sP);
@@ -331,24 +331,26 @@ public class UserGUI extends JFrame {
         btnNewOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //display orderPanel
                 rightAdCl.show(rightAdPanel,"3");
+                //populate orderPanel
+                lblOrderName.setText(lblDetailsName.getText());
+                lblOrderBarcode.setText(lblDetailsBarcode.getText());
+                lblOrderSoldPrice.setText(lblDetailsPrice.getText());
+                lblOrderCurStock.setText(lblDetailsStock.getText());
+                lblOrderCostPProd.setText("Cost per Product: N/A");//add later
 
+                //todo create a listener that updates order total whenever tFNumOrder changes
             }
         });
         btnEditDetailsV.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rightAdCl.show(rightAdPanel,"2");
-                //todo move to separate function
-                String name = lblDetailsName.getText();
-                String barcode = lblDetailsBarcode.getText().replaceAll("\\D+","");
-                int stock = Integer.parseInt(lblDetailsStock.getText().replaceAll("\\D+",""));
-                double price = Double.parseDouble(lblDetailsPrice.getText().replaceAll("[^\\\\.0123456789]",""));
-                //todo add photo
-                populateEditView(name,barcode,stock,price);
+                getSelectedEditDetails();
             }
         });
-        btnExitBack.addActionListener(new ActionListener() {
+        btnBackEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rightAdCl.show(rightAdPanel,"1");
@@ -371,9 +373,9 @@ public class UserGUI extends JFrame {
                 double Price = ((Product)jListLowStock.getSelectedValue()).getPrice();
                 int Stock = ((Product)jListLowStock.getSelectedValue()).getStock();
 
+                rightAdCl.show(rightAdPanel,"1");
+
                 displayProductDetails(Barcode,Name,Img,Price,Stock);
-
-
             }
         });
         jListAllProducts.addMouseListener(new MouseAdapter() {
@@ -386,7 +388,91 @@ public class UserGUI extends JFrame {
                 double Price = ((Product)jListAllProducts.getSelectedValue()).getPrice();
                 int Stock = ((Product)jListAllProducts.getSelectedValue()).getStock();
 
+                rightAdCl.show(rightAdPanel,"1");
+
                 displayProductDetails(Barcode,Name,Img,Price,Stock);
+            }
+        });
+        btnConfirmEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isFound = false;
+                //todo make so can edit barcode (currently relies on barcode to identify product being edited)
+                //get productArray
+                ProductDataManager.getAllProducts();
+
+                //get all text field values
+                String name = tFEditName.getText();
+                String barcode = tFEditBarcode.getText();//need to enable editable when converting method to edit barcode
+                int stock = Integer.parseInt(tFEditStock.getText());
+                double price = Double.parseDouble(tFEditPrice.getText());
+//                tFEditImg.getText();//todo make so can edit img
+
+                int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
+                if (answer == 0){
+                    //loop through array and search for matching barcode
+                    for (Product p:ProductDataManager.getAllProducts()) {
+                        if (p.getBarcode().equals(barcode)){
+                            //edit product details with edited values
+                            p.setName(name);
+                            p.setStock(stock);
+                            p.setPrice(price);
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (isFound){
+                        //save product array to text file
+                        ProductDataManager pdata = new ProductDataManager();
+                        pdata.save();
+                        JOptionPane.showMessageDialog(null,"Product Edited");
+
+                    }else{
+                        //display error message
+                        JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
+                    }
+                    //todo refresh rightAdPanel
+
+                    //change card to details Panel
+                    rightAdCl.show(rightAdPanel,"1");
+                }
+
+            }
+        });
+        btnOrderProduct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isFound = false;
+                //get product details and num ordering
+                String productOrdering = lblOrderBarcode.getText().replaceAll("\\D+","");//parse lbl for numbers
+                int numOrdering = Integer.parseInt(tFNumOrder.getText());
+                double price = Double.parseDouble(lblOrderSoldPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+
+                //calculate total
+                double total = numOrdering * price;
+
+//                JOptionPane.showMessageDialog(null, String.format("The total price will be: £%.2f", total));
+                //check if user is sure
+                int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
+                if(answer == 0){
+                    //edit file
+                    for (Product p:ProductDataManager.getAllProducts()) {
+                        if (p.getBarcode().equals(productOrdering)){
+                            int stock = numOrdering + p.getStock();
+                            p.setStock(stock);
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (isFound) {
+                        ProductDataManager pData = new ProductDataManager();
+                        pData.save();
+                        JOptionPane.showMessageDialog(null,"Product updated");
+                        rightAdCl.show(rightAdPanel,"1");
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Product not found");
+                    }
+                }
             }
         });
     }
@@ -423,7 +509,7 @@ public class UserGUI extends JFrame {
             scannedArray.addProduct(tempProduct);
         }else{
             for (ScannedProduct sP:scannedArray.getAll()) {
-                if (sP.getBarcode() == barcode){
+                if (sP.getBarcode().equals(barcode)){
                     quantityScanned = sP.getQuantityScanned() + 1;
                     sP.setQuantityScanned(quantityScanned);
                     break;
@@ -444,11 +530,11 @@ public class UserGUI extends JFrame {
         }
          totalValueLbl.setText(String.format("£%.2f",ScannedProducts.getTotalPrice()));
     }
-    //todo convert function so does not need pData
+
     public void updateStock(ProductDataManager pData,ScannedProducts products){
         for (ScannedProduct sP:products.getAll()) {
             for (Product p: ProductDataManager.getAllProducts()) {
-                if (p.getBarcode()==sP.getBarcode()){
+                if (p.getBarcode().equals(sP.getBarcode())){
                     p.setStock(p.getStock() - sP.getQuantityScanned());
                 }
             }
@@ -504,11 +590,21 @@ public class UserGUI extends JFrame {
         lblDetailsPrice.setText(String.format("Price: £%.2f", Price));
         //todo display img
     }
+
+    public void getSelectedEditDetails(){
+        String name = lblDetailsName.getText();
+        String barcode = lblDetailsBarcode.getText().replaceAll("\\D+","");
+        int stock = Integer.parseInt(lblDetailsStock.getText().replaceAll("\\D+",""));
+        double price = Double.parseDouble(lblDetailsPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+        //todo add photo
+
+        populateEditView(name,barcode,stock,price);
+    }
     public void populateEditView(String name,String barcode,int stock,double price){
-        tFieldEditName.setText(name);
-        tFieldEditBarcode.setText(barcode);
-        tFieldEditStock.setText(String.valueOf(stock));
-        tFieldEditPrice.setText(String.valueOf(price));
+        tFEditName.setText(name);
+        tFEditBarcode.setText(barcode);
+        tFEditStock.setText(String.valueOf(stock));
+        tFEditPrice.setText(String.valueOf(price));
 
     }
 }
