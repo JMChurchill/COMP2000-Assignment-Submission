@@ -449,7 +449,7 @@ public class UserGUI extends JFrame {
         ScannedProducts scannedArray = new ScannedProducts();
         if (scannedArray.getAll().isEmpty()){
             ScannedProduct tempProduct = new ScannedProduct(barcode, name, img, price, quantityScanned);
-            scannedArray.addProduct(tempProduct);
+            scannedArray.add(tempProduct);
         }else{
             for (ScannedProduct sP:scannedArray.getAll()) {
                 if (sP.getBarcode().equals(barcode)){
@@ -460,7 +460,7 @@ public class UserGUI extends JFrame {
             }
             if (quantityScanned == 1){
                 ScannedProduct newScanned = new ScannedProduct(barcode, name, img, price, quantityScanned);
-                scannedArray.addProduct(newScanned);
+                scannedArray.add(newScanned);
             }
         }
         populateScannedJList(scannedArray.getAll());

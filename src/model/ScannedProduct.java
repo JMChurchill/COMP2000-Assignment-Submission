@@ -61,8 +61,4 @@ public class ScannedProduct {//make extend product
         QuantityScanned = quantityScanned;
     }
 
-//    public ArrayList<ScannedProduct> getAll(){
-//        return allScanned;
-//    }
-
 }

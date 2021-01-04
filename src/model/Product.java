@@ -1,6 +1,8 @@
 package model;
 
-public class Product {
+import java.util.ArrayList;
+
+public class Product extends AbstractSubject{
 
 
     private String Barcode;
@@ -8,6 +10,9 @@ public class Product {
     private String Image;
     private double Price;
     private int Stock;
+
+    private static final ArrayList<Product> products = new ArrayList<>();
+
     public Product() {}
 
     public Product(String barcode,String name, String image, double price, int quantity) {
@@ -56,6 +61,18 @@ public class Product {
 
     public void setStock(int stock) {
         Stock = stock;
+    }
+
+    public static void add(Product newProduct){
+        products.add(newProduct);
+    }
+
+    public static void remove(Product oldProduct){
+        products.remove(oldProduct);
+    }
+
+    public static ArrayList<Product> getAllProducts(){
+        return products;
     }
 
 }
