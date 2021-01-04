@@ -161,7 +161,7 @@ public class UserGUI extends JFrame {
                 String barcode = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getBarcode();
                 int QuantityScanned;
 
-                int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item");
+                int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
                     ScannedListModel.clear();
@@ -396,11 +396,7 @@ public class UserGUI extends JFrame {
         btnConfirmEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean isFound = false;
                 //todo make so can edit barcode (currently relies on barcode to identify product being edited)
-                //get productArray
-                ProductDataManager.getAllProducts();
-
                 //get all text field values
                 String name = tFEditName.getText();
                 String barcode = tFEditBarcode.getText();//need to enable editable when converting method to edit barcode
@@ -408,71 +404,18 @@ public class UserGUI extends JFrame {
                 double price = Double.parseDouble(tFEditPrice.getText());
 //                tFEditImg.getText();//todo make so can edit img
 
-                int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
-                if (answer == 0){
-                    //loop through array and search for matching barcode
-                    for (Product p:ProductDataManager.getAllProducts()) {
-                        if (p.getBarcode().equals(barcode)){
-                            //edit product details with edited values
-                            p.setName(name);
-                            p.setStock(stock);
-                            p.setPrice(price);
-                            isFound = true;
-                            break;
-                        }
-                    }
-                    if (isFound){
-                        //save product array to text file
-                        ProductDataManager pdata = new ProductDataManager();
-                        pdata.save();
-                        JOptionPane.showMessageDialog(null,"Product Edited");
-
-                    }else{
-                        //display error message
-                        JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
-                    }
-                    //todo refresh rightAdPanel
-
-                    //change card to details Panel
-                    rightAdCl.show(rightAdPanel,"1");
-                }
-
+                saveEditChanges(name,barcode,stock,price);
             }
         });
         btnOrderProduct.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean isFound = false;
                 //get product details and num ordering
                 String productOrdering = lblOrderBarcode.getText().replaceAll("\\D+","");//parse lbl for numbers
                 int numOrdering = Integer.parseInt(tFNumOrder.getText());
                 double price = Double.parseDouble(lblOrderSoldPrice.getText().replaceAll("[^\\\\.0123456789]",""));
 
-                //calculate total
-                double total = numOrdering * price;
-
-//                JOptionPane.showMessageDialog(null, String.format("The total price will be: £%.2f", total));
-                //check if user is sure
-                int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
-                if(answer == 0){
-                    //edit file
-                    for (Product p:ProductDataManager.getAllProducts()) {
-                        if (p.getBarcode().equals(productOrdering)){
-                            int stock = numOrdering + p.getStock();
-                            p.setStock(stock);
-                            isFound = true;
-                            break;
-                        }
-                    }
-                    if (isFound) {
-                        ProductDataManager pData = new ProductDataManager();
-                        pData.save();
-                        JOptionPane.showMessageDialog(null,"Product updated");
-                        rightAdCl.show(rightAdPanel,"1");
-                    }else{
-                        JOptionPane.showMessageDialog(null,"Product not found");
-                    }
-                }
+                orderProduct(productOrdering,numOrdering,price);
             }
         });
     }
@@ -607,4 +550,63 @@ public class UserGUI extends JFrame {
         tFEditPrice.setText(String.valueOf(price));
 
     }
+    public void saveEditChanges(String name, String barcode, int stock, double price){
+        boolean isFound = false;
+        int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
+        if (answer == 0){
+            //loop through array and search for matching barcode
+            for (Product p:ProductDataManager.getAllProducts()) {
+                if (p.getBarcode().equals(barcode)){
+                    //edit product details with edited values
+                    p.setName(name);
+                    p.setStock(stock);
+                    p.setPrice(price);
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound){
+                //save product array to text file
+                ProductDataManager pdata = new ProductDataManager();
+                pdata.save();
+                JOptionPane.showMessageDialog(null,"Product Edited");
+
+            }else{
+                //display error message
+                JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
+            }
+            //todo refresh rightAdPanel
+
+            //change card to details Panel
+            rightAdCl.show(rightAdPanel,"1");
+        }
+    }
+    public void orderProduct(String productOrdering, int numOrdering, double price){
+        boolean isFound = false;
+        double total = numOrdering * price;
+
+//                JOptionPane.showMessageDialog(null, String.format("The total price will be: £%.2f", total));
+        //check if user is sure
+        int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
+        if(answer == 0){
+            //edit file
+            for (Product p:ProductDataManager.getAllProducts()) {
+                if (p.getBarcode().equals(productOrdering)){
+                    int stock = numOrdering + p.getStock();
+                    p.setStock(stock);
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound) {
+                ProductDataManager pData = new ProductDataManager();
+                pData.save();
+                JOptionPane.showMessageDialog(null,"Product updated");
+                rightAdCl.show(rightAdPanel,"1");
+            }else{
+                JOptionPane.showMessageDialog(null,"Product not found");
+            }
+        }
+    }
+
 }
