@@ -147,10 +147,9 @@ public class UserGUI extends JFrame {
                 int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
                 if (Stock > 0){
-                    //JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
                     AddProductToScanned(Barcode, Name, Img, Price);
                 } else{
-                    JOptionPane.showMessageDialog(null,"Sorry this Item is Out of Stock");
+                    displayMessage("Sorry this Item is Out of Stock");
                 }
             }
         });
@@ -162,7 +161,7 @@ public class UserGUI extends JFrame {
                 String barcode = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getBarcode();
                 int QuantityScanned;
 
-                int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");
+                int response = displayConfirmDialog("Would you like to delete this item?","Confirm");
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
                     ScannedListModel.clear();
@@ -204,7 +203,7 @@ public class UserGUI extends JFrame {
                         rightCl.show(rightPanel,"3");
                     }
                 }else{
-                    JOptionPane.showMessageDialog(null,"Please scan an item");
+                    displayMessage("Please scan an item");
                 }
             }
         });
@@ -256,17 +255,15 @@ public class UserGUI extends JFrame {
                 }
                 double changeDue = totalPaid-totalPrice;
 
-                JOptionPane.showMessageDialog(null,"total paid: " + totalPaid + " total price: " + totalPrice + " Change Due: " + changeDue);
                 //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
                 if (changeDue>=0){
-                    JOptionPane.showMessageDialog(null,"correct");
                     updateStock(pData,products);
                     //ask if user wants receipt
                     displayReceipt(true, products,totalPaid);
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
                 } else{
-                    JOptionPane.showMessageDialog(null,"Please insert more cash");
+                    displayMessage("Please insert more cash");
                 }
             }
         });
@@ -280,41 +277,11 @@ public class UserGUI extends JFrame {
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean isFound = true; //todo change to false
                 //get inputs
                 String userName = tFieldUserName.getText();
                 String password = tFieldPassword.getText();
-                //todo hash password
 
-                //todo search flat database for user with matching username and password -> if found return true
-
-                if (isFound){
-                    //show admin database view
-                    adminCl.show(adminPanel,"2");
-                    //populate all products
-                    allListModel.clear();
-                    lowStockListModel.clear();
-                    //get products from products array and add them to listModel
-                    for (Product p: ProductDataManager.getAllProducts()) {
-                        allListModel.addElement(p);
-                        //if stock less than 20 add to lowStock
-                        if (p.getStock()<=20){
-                            lowStockListModel.addElement(p);
-                        }
-                    }
-                    //Render Images and text
-                    //low stock
-                    jListLowStock.setCellRenderer(new ItemSelectRenderer());
-                    jListLowStock.setModel(lowStockListModel);
-                    //all
-                    jListAllProducts.setCellRenderer(new ItemSelectRenderer());
-                    jListAllProducts.setModel(allListModel);
-                    //populate low stock
-
-                }else {
-                    //else return wrong password message
-                    JOptionPane.showMessageDialog(null,"Unable to login please try again");
-                }
+                login(userName,password);
             }
         });
         btnExitAdmin.addActionListener(new ActionListener() {
@@ -489,18 +456,13 @@ public class UserGUI extends JFrame {
         populateScannedJList(scannedArray);
     }
     public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
-        int rQuestion = JOptionPane.showConfirmDialog(
-                null,
-                "Would you like a receipt?",
-                "Receipt?",
-                JOptionPane.YES_NO_OPTION);
-        if (rQuestion == 0){
+        int answer = displayConfirmDialog("Would you like a receipt?","Receipt?");
+        if (answer == 0){
             //if yes display receipt in new window
             double price = 0;
             double total = 0;
             //create receipt message
             String message ="<html><u>Receipt</u></html> \n";
-
             for (ScannedProduct sp:products.getAll()) {
                 price = sp.getPrice() * sp.getQuantityScanned();
                 total += price;
@@ -518,10 +480,7 @@ public class UserGUI extends JFrame {
                 message += String.format("\nChange: £%.2f", change);
             }
             //display popup
-            JOptionPane.showMessageDialog(null,
-                    message,
-                    "Receipt",
-                    JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, message, "Receipt", JOptionPane.PLAIN_MESSAGE);
         }
     }
 
@@ -551,7 +510,7 @@ public class UserGUI extends JFrame {
     }
     public void saveEditChanges(String name, String barcode, int stock, double price){
         boolean isFound = false;
-        int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
+        int answer = displayConfirmDialog("Are you sure you want to change this product?","Confirm");
         if (answer == 0){
             //loop through array and search for matching barcode
             for (Product p:ProductDataManager.getAllProducts()) {
@@ -568,14 +527,13 @@ public class UserGUI extends JFrame {
                 //save product array to text file
                 ProductDataManager pdata = new ProductDataManager();
                 pdata.save();
-                JOptionPane.showMessageDialog(null,"Product Edited");
+                displayMessage("Product Edited");
 
             }else{
                 //display error message
-                JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
+                displayMessage("The product you were trying to edit was not found");
             }
             //todo refresh rightAdPanel
-
             //change card to details Panel
             rightAdCl.show(rightAdPanel,"1");
         }
@@ -583,10 +541,8 @@ public class UserGUI extends JFrame {
     public void orderProduct(String productOrdering, int numOrdering, double price){
         boolean isFound = false;
         double total = numOrdering * price;
-
-//                JOptionPane.showMessageDialog(null, String.format("The total price will be: £%.2f", total));
         //check if user is sure
-        int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
+        int answer = displayConfirmDialog(String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm");
         if(answer == 0){
             //edit file
             for (Product p:ProductDataManager.getAllProducts()) {
@@ -600,12 +556,53 @@ public class UserGUI extends JFrame {
             if (isFound) {
                 ProductDataManager pData = new ProductDataManager();
                 pData.save();
-                JOptionPane.showMessageDialog(null,"Product updated");
+                displayMessage("Product updated");
                 rightAdCl.show(rightAdPanel,"1");
             }else{
-                JOptionPane.showMessageDialog(null,"Product not found");
+                displayMessage("Product not found");
             }
         }
+    }
+    public void login(String userName,String Password){
+        boolean isFound = true; //todo change to false
+        //todo hash password
+
+        //todo search flat database for user with matching username and password -> if found return true
+
+        if (isFound){
+            //show admin database view
+            adminCl.show(adminPanel,"2");
+            //populate all products
+            allListModel.clear();
+            lowStockListModel.clear();
+            //get products from products array and add them to listModel
+            for (Product p: ProductDataManager.getAllProducts()) {
+                allListModel.addElement(p);
+                //if stock less than 20 add to lowStock
+                if (p.getStock()<=20){
+                    lowStockListModel.addElement(p);
+                }
+            }
+            //Render Images and text
+            //low stock
+            jListLowStock.setCellRenderer(new ItemSelectRenderer());
+            jListLowStock.setModel(lowStockListModel);
+            //all
+            jListAllProducts.setCellRenderer(new ItemSelectRenderer());
+            jListAllProducts.setModel(allListModel);
+            //populate low stock
+
+        }else {
+            //else return wrong password message
+            displayMessage("Unable to login please try again");
+        }
+    }
+    public void displayMessage(String message){
+        JOptionPane.showMessageDialog(null,message);
+    }
+    public int displayConfirmDialog(String message,String title){
+        int answer = JOptionPane.showConfirmDialog(null,message,title,JOptionPane.YES_NO_OPTION);
+        return answer;
     }
 
 }
