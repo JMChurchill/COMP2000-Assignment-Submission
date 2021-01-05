@@ -1,5 +1,6 @@
 package view;
 
+import controller.CashPayment;
 import controller.ItemSelectRenderer;
 import controller.ProductDataManager;
 import controller.ScannedItemRenderer;
@@ -16,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 
-public class UserGUI extends JFrame {
+public class UserGUI extends AbstractView {
     private JPanel mainPanel;
     private JLabel totalLbl;
     private JButton btnFinish;
@@ -133,8 +134,12 @@ public class UserGUI extends JFrame {
 
         rightAdCl.show(rightAdPanel,"1");
 
+        setContentPane(mainPanel);
+        //initialiseComponents();
+        initialise();
 
-        initialiseComponents();
+        populateListModel();
+
 
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
@@ -223,14 +228,11 @@ public class UserGUI extends JFrame {
         btnGo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo card payment functions
-                //add up all scanned products prices
                 ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
-                double totalPrice = ScannedProducts.getTotalPrice();
+                //add up all scanned products prices
                 //todo check if pin correct -> contact card payment api -> if pin correct take money from account and return true
                 String customersPin = tFieldPin.getText();
-                //subtract bought items from stock (in flat database)
                 updateStock(pData,products);
                 //ask if user wants receipt
                 displayReceipt(false, products,0);
@@ -246,14 +248,14 @@ public class UserGUI extends JFrame {
                 //add up all scanned products prices
                 ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
-                double totalPrice = ScannedProducts.getTotalPrice();
+                double paymentDue = ScannedProducts.getTotalPrice();
                 //get text from field
                 try {
                     totalPaid = Double.parseDouble(tFieldCashPaid.getText());
                 } catch (Exception ex){
                     totalPaid = 0;
                 }
-                double changeDue = totalPaid-totalPrice;
+                double changeDue = totalPaid-paymentDue;
 
                 //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
                 if (changeDue>=0){
@@ -265,6 +267,12 @@ public class UserGUI extends JFrame {
                 } else{
                     displayMessage("Please insert more cash");
                 }
+
+//                CashPayment payment = new CashPayment(paymentDue,totalPaid);
+//                boolean success = payment.ProcessPayment();
+//                if (success){
+//                    rightCl.show(rightPanel,"1");
+//                }
             }
         });
         btnAdminView.addActionListener(new ActionListener() {
@@ -273,7 +281,6 @@ public class UserGUI extends JFrame {
                 interfaceCl.show(interfacePanel,"2");
             }
         });
-        //todo add login functionality
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
