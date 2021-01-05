@@ -135,6 +135,7 @@ public class UserGUI extends JFrame {
 
 
         initialiseComponents();
+
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -425,8 +426,6 @@ public class UserGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1500,800));
         setTitle("Checkout");
-//        ImageIcon image = new ImageIcon(""); //create an image icon
-//        setIconImage(image.getImage()); //change icon of frame
         pack();
         populateListModel();
     }
