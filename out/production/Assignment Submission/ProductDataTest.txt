@@ -1,3 +1,3 @@
-123456|Bread|https://images.freeimages.com/images/small-previews/b38/bread-1-1329979.jpg|3.2|158
+123456|Bread|https://images.freeimages.com/images/small-previews/b38/bread-1-1329979.jpg|3.2|157
 789101|Cheese|https://images.stockfreeimages.com/9685/sfi226w/96856591.jpg|2.0|95
 112233|Flour|https://thumbs.dreamstime.com/b/wheat-flour-ears-isolated-white-57788494.jpg|1.4|18

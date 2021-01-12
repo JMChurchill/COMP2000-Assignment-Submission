@@ -573,7 +573,6 @@ public class UserGUI extends JFrame {
     public void orderProduct(String productOrdering, int numOrdering, double price){
         boolean isFound = false;
         double total = numOrdering * price;
-
 //                JOptionPane.showMessageDialog(null, String.format("The total price will be: £%.2f", total));
         //check if user is sure
         int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
@@ -596,6 +595,14 @@ public class UserGUI extends JFrame {
                 JOptionPane.showMessageDialog(null,"Product not found");
             }
         }
+    }
+
+    public void displayMessage(String message){
+        JOptionPane.showMessageDialog(null,message);
+    }
+    public int displayConfirmDialog(String message,String title){
+        int answer = JOptionPane.showConfirmDialog(null,message,title,JOptionPane.YES_NO_OPTION);
+        return answer;
     }
 
 }
