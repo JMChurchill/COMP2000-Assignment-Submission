@@ -1,5 +1,6 @@
 package controller;
 
+import model.Product;
 import model.ScannedProduct;
 import model.ScannedProducts;
 
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 
 public class CheckoutViewController {
     public static ArrayList<ScannedProduct> addProductToScanned(String barcode, String name, String img, double price){
-        //ScannedListModel.clear();
         int quantityScanned = 1;
 
         ScannedProducts scannedArray = new ScannedProducts();
@@ -49,6 +49,56 @@ public class CheckoutViewController {
         }
         return allScanned;
     }
+
+    public static void cashPayment(double totalPaid, double changeDue){
+        ProductDataManager pData = new ProductDataManager();
+        ScannedProducts products = new ScannedProducts();
+
+        updateStock(pData,products);
+    }
+
+
+
+    public static void updateStock(ProductDataManager pData,ScannedProducts products){
+        for (ScannedProduct sP:products.getAll()) {
+            for (Product p: ProductDataManager.getAllProducts()) {
+                if (p.getBarcode().equals(sP.getBarcode())){
+                    p.setStock(p.getStock() - sP.getQuantityScanned());
+                }
+            }
+        }
+        pData.save();
+    }
+
+
+    public static String createReceiptMessage(boolean isCash, ScannedProducts products, double totalPaid){
+        double price = 0;
+        double total = 0;
+        //create receipt message
+        String message ="<html><u>Receipt</u></html> \n";
+
+        for (ScannedProduct sp:products.getAll()) {
+            price = sp.getPrice() * sp.getQuantityScanned();
+            total += price;
+            message += sp.getName();
+            message += String.format(" x " + sp.getQuantityScanned() + " £%.2f", price);
+            message += "\n";
+        }
+        message += "===========\n";
+        message += String.format("Total: £%.2f", total);
+
+        if (isCash){
+            double change = totalPaid - total;
+            message += "\n-----------\n";
+            message += String.format("Cash: £%.2f", totalPaid);
+            message += String.format("\nChange: £%.2f", change);
+        }
+        return message;
+    }
+
+
+
+
 
 
 }

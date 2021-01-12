@@ -136,13 +136,7 @@ public class UserGUI extends JFrame {
                 int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
                 if (Stock > 0){
-                    //JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
-                    //ScannedProduct scannedArray = new ScannedProduct();
-                    //scannedArray = CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price);
-                    //populateScannedJList(scannedArray.getAll());
-
                     populateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price));
-
                 } else{
                     JOptionPane.showMessageDialog(null,"Sorry this Item is Out of Stock");
                 }
@@ -158,25 +152,7 @@ public class UserGUI extends JFrame {
                 int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");//todo remove cancel option
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
-                    //ScannedListModel.clear();
-//                    ArrayList<ScannedProduct> allScanned = new ArrayList<>();
-//                    ScannedProducts Sc = new ScannedProducts();
-//                    allScanned = Sc.getAll();
-//
-//                    for (ScannedProduct sP:allScanned) {
-//                        if (sP.getBarcode().equals(barcode)){
-//                            QuantityScanned = sP.getQuantityScanned();
-//                            if(QuantityScanned == 1){
-//                                Sc.remove(sP);
-//                            }else{
-//                                sP.setQuantityScanned(QuantityScanned - 1);
-//                            }
-//                            break;
-//                        }
-//                    }
-//                    populateScannedJList(allScanned);
                     populateScannedJList(CheckoutViewController.removeProductFromScanned(barcode));
-
                 }
             }
         });
@@ -458,28 +434,30 @@ public class UserGUI extends JFrame {
                 "Receipt?",
                 JOptionPane.YES_NO_OPTION);
         if (rQuestion == 0){
-            //if yes display receipt in new window
-            double price = 0;
-            double total = 0;
-            //create receipt message
-            String message ="<html><u>Receipt</u></html> \n";
+//            //if yes display receipt in new window
+//            double price = 0;
+//            double total = 0;
+//            //create receipt message
+//            String message ="<html><u>Receipt</u></html> \n";
+//
+//            for (ScannedProduct sp:products.getAll()) {
+//                price = sp.getPrice() * sp.getQuantityScanned();
+//                total += price;
+//                message += sp.getName();
+//                message += String.format(" x " + sp.getQuantityScanned() + " £%.2f", price);
+//                message += "\n";
+//            }
+//            message += "===========\n";
+//            message += String.format("Total: £%.2f", total);
+//
+//            if (isCash){
+//                double change = totalPaid - total;
+//                message += "\n-----------\n";
+//                message += String.format("Cash: £%.2f", totalPaid);
+//                message += String.format("\nChange: £%.2f", change);
+//            }
+            String message = CheckoutViewController.createReceiptMessage(isCash, products, totalPaid);
 
-            for (ScannedProduct sp:products.getAll()) {
-                price = sp.getPrice() * sp.getQuantityScanned();
-                total += price;
-                message += sp.getName();
-                message += String.format(" x " + sp.getQuantityScanned() + " £%.2f", price);
-                message += "\n";
-            }
-            message += "===========\n";
-            message += String.format("Total: £%.2f", total);
-
-            if (isCash){
-                double change = totalPaid - total;
-                message += "\n-----------\n";
-                message += String.format("Cash: £%.2f", totalPaid);
-                message += String.format("\nChange: £%.2f", change);
-            }
             //display popup
             JOptionPane.showMessageDialog(null,
                     message,
