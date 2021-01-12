@@ -44,6 +44,36 @@ public class AdminDataManager {
         }
     }
 
+    public boolean findUser(String userName, String password){
+        boolean isFound = false;
+        try {
+            File file = new File(filePath);
+
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()){
+                String data = scanner.nextLine();
+
+                String[] adminData = data.split(separator);
+
+                int adminIdToInt = Integer.parseInt(adminData[0]);
+
+                String currentUserName = adminData[1];
+                String currentPassword = adminData[2];
+                if (userName.equals(currentUserName) && password.equals(currentPassword)){
+                    isFound = true;
+                    break;
+                }
+            }
+            scanner.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return isFound;
+    }
+
+
     public void save(){
         try {
             FileWriter writer = new FileWriter(filePath);

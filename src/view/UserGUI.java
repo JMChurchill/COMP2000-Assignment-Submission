@@ -1,9 +1,6 @@
 package view;
 
-import controller.CheckoutViewController;
-import controller.ItemSelectRenderer;
-import controller.ProductDataManager;
-import controller.ScannedItemRenderer;
+import controller.*;
 import model.Product;
 import model.ScannedProduct;
 import model.ScannedProducts;
@@ -14,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 
@@ -386,7 +385,6 @@ public class UserGUI extends JFrame {
     }
     public void clearScannedProducts(ArrayList<ScannedProduct> scannedArray){
         scannedArray.clear();
-        //ScannedListModel.clear();
         populateScannedJList(scannedArray);
     }
     public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
@@ -402,11 +400,10 @@ public class UserGUI extends JFrame {
         }
     }
 
-    public void login(String userName, String Password){
-        boolean isFound = true; //todo change to false
-        //todo hash password
-
-        //todo search flat database for user with matching username and password -> if found return true
+    public void login(String userName, String password){
+        boolean isFound;
+        LoginController login = new LoginController();
+        isFound = login.logIntoAccount(userName, password);
 
         if (isFound){
             //show admin database view
@@ -428,8 +425,8 @@ public class UserGUI extends JFrame {
             jListLowStock.setModel(lowStockListModel);
             //all
             jListAllProducts.setCellRenderer(new ItemSelectRenderer());
-            jListAllProducts.setModel(allListModel);
             //populate low stock
+            jListAllProducts.setModel(allListModel);
 
         }else {
             //else return wrong password message
