@@ -1,5 +1,6 @@
 package view;
 
+import controller.CheckoutViewController;
 import controller.ItemSelectRenderer;
 import controller.ProductDataManager;
 import controller.ScannedItemRenderer;
@@ -136,7 +137,12 @@ public class UserGUI extends JFrame {
 
                 if (Stock > 0){
                     //JOptionPane.showMessageDialog(null, ((Product)ItemSelectJList.getSelectedValue()).getName() + " Barcode: " + ((Product)ItemSelectJList.getSelectedValue()).getBarcode());
-                    AddProductToScanned(Barcode, Name, Img, Price);
+                    //ScannedProduct scannedArray = new ScannedProduct();
+                    //scannedArray = CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price);
+                    //populateScannedJList(scannedArray.getAll());
+
+                    populateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price));
+
                 } else{
                     JOptionPane.showMessageDialog(null,"Sorry this Item is Out of Stock");
                 }
@@ -153,7 +159,7 @@ public class UserGUI extends JFrame {
                 int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
-                    ScannedListModel.clear();
+                    //ScannedListModel.clear();
                     ArrayList<ScannedProduct> allScanned = new ArrayList<>();
                     ScannedProducts Sc = new ScannedProducts();
                     allScanned = Sc.getAll();
@@ -396,8 +402,8 @@ public class UserGUI extends JFrame {
         ItemSelectJList.setCellRenderer(new ItemSelectRenderer());
         ItemSelectJList.setModel(listModel);
     }
-    public void AddProductToScanned(String barcode, String name, String img, double price){
-        ScannedListModel.clear();
+    public void AddProductToScanned(String barcode, String name, String img, double price){//unused
+        //ScannedListModel.clear();
         int quantityScanned = 1;
 
         ScannedProducts scannedArray = new ScannedProducts();
@@ -420,6 +426,7 @@ public class UserGUI extends JFrame {
         populateScannedJList(scannedArray.getAll());
     }
     public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
+        ScannedListModel.clear();
         for (ScannedProduct i:allScanned) {
             ScannedListModel.addElement(i);
             ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
@@ -440,7 +447,7 @@ public class UserGUI extends JFrame {
     }
     public void clearScannedProducts(ArrayList<ScannedProduct> scannedArray){
         scannedArray.clear();
-        ScannedListModel.clear();
+        //ScannedListModel.clear();
         populateScannedJList(scannedArray);
     }
     public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
