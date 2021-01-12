@@ -4,20 +4,16 @@ import java.util.ArrayList;
 
 public class ScannedProducts {
     private static final ArrayList<ScannedProduct> allScanned = new ArrayList<>();
-    //private static float totalPrice;
 
     public ArrayList<ScannedProduct> getAll(){
         return allScanned;
     }
 
     public void addProduct(ScannedProduct newScan){
-        //totalPrice = totalPrice + newScan.getPrice();
         allScanned.add(newScan);
-
     }
 
     public void remove(ScannedProduct oldScan){
-        //totalPrice = totalPrice - oldScan.getPrice();
         allScanned.remove(oldScan);
     }
 

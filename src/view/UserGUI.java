@@ -151,31 +151,32 @@ public class UserGUI extends JFrame {
         ScannedItemJList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                super.mouseClicked(e);
                 //values
                 String barcode = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getBarcode();
                 int QuantityScanned;
 
-                int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");
+                int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");//todo remove cancel option
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
                     //ScannedListModel.clear();
-                    ArrayList<ScannedProduct> allScanned = new ArrayList<>();
-                    ScannedProducts Sc = new ScannedProducts();
-                    allScanned = Sc.getAll();
+//                    ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+//                    ScannedProducts Sc = new ScannedProducts();
+//                    allScanned = Sc.getAll();
+//
+//                    for (ScannedProduct sP:allScanned) {
+//                        if (sP.getBarcode().equals(barcode)){
+//                            QuantityScanned = sP.getQuantityScanned();
+//                            if(QuantityScanned == 1){
+//                                Sc.remove(sP);
+//                            }else{
+//                                sP.setQuantityScanned(QuantityScanned - 1);
+//                            }
+//                            break;
+//                        }
+//                    }
+//                    populateScannedJList(allScanned);
+                    populateScannedJList(CheckoutViewController.removeProductFromScanned(barcode));
 
-                    for (ScannedProduct sP:allScanned) {
-                        if (sP.getBarcode().equals(barcode)){
-                            QuantityScanned = sP.getQuantityScanned();
-                            if(QuantityScanned == 1){
-                                Sc.remove(sP);
-                            }else{
-                                sP.setQuantityScanned(QuantityScanned - 1);
-                            }
-                            break;
-                        }
-                    }
-                    populateScannedJList(allScanned);
                 }
             }
         });

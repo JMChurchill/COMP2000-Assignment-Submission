@@ -30,14 +30,25 @@ public class CheckoutViewController {
         return scannedArray.getAll();
     }
 
+    public static ArrayList<ScannedProduct> removeProductFromScanned(String barcode){
+        int QuantityScanned;
+        ArrayList<ScannedProduct> allScanned = new ArrayList<>();
+        ScannedProducts Sc = new ScannedProducts();
+        allScanned = Sc.getAll();
 
-//    public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
-//        ScannedListModel.clear();
-//        for (ScannedProduct i:allScanned) {
-//            ScannedListModel.addElement(i);
-//            ScannedItemJList.setCellRenderer(new ScannedItemRenderer());
-//            ScannedItemJList.setModel(ScannedListModel);
-//        }
-//        totalValueLbl.setText(String.format("£%.2f",ScannedProducts.getTotalPrice()));
-//    }
+        for (ScannedProduct sP:allScanned) {
+            if (sP.getBarcode().equals(barcode)){
+                QuantityScanned = sP.getQuantityScanned();
+                if(QuantityScanned == 1){
+                    Sc.remove(sP);
+                }else{
+                    sP.setQuantityScanned(QuantityScanned - 1);
+                }
+                break;
+            }
+        }
+        return allScanned;
+    }
+
+
 }
