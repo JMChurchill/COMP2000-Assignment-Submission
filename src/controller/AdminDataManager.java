@@ -15,7 +15,6 @@ public class AdminDataManager {
     private final ArrayList<AdminUser> admins = new ArrayList<>();
 
     //get data from AdminData
-
     public void load(){
         try {
             File file = new File(filePath);
