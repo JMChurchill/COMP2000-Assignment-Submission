@@ -58,6 +58,33 @@ public class CheckoutViewController {
         updateStock(pData,products);
     }
 
+    public static boolean cardPayment(String customersPin){
+        boolean pinOk = checkPin(customersPin);
+        if (pinOk){
+            //todo card payment functions
+            //add up all scanned products prices
+            ProductDataManager pData = new ProductDataManager();
+            ScannedProducts products = new ScannedProducts();
+            double totalPrice = ScannedProducts.getTotalPrice();
+            updateStock(pData,products);
+        }
+        return pinOk;
+    }
+    
+    public static boolean checkPin(String customersPin){
+        boolean pinCorrect = false;
+        String[] arrayOfPins = {"1010","1234","2222"};
+        //Todo contact card payment api -> if pin correct take money from account and return true
+        //check if pin correct
+        for (String pin:arrayOfPins) {
+            if (customersPin.equals(pin)){
+                pinCorrect = true;
+                break;
+            }
+        }
+        return pinCorrect;
+    }
+
 
 
     public static void updateStock(ProductDataManager pData,ScannedProducts products){

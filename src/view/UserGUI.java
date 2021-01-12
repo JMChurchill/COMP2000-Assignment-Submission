@@ -194,19 +194,25 @@ public class UserGUI extends JFrame {
         btnGo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo card payment functions
-                //add up all scanned products prices
-                ProductDataManager pData = new ProductDataManager();
+//                //todo card payment functions
+//                //add up all scanned products prices
+//                ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
-                double totalPrice = ScannedProducts.getTotalPrice();
-                //todo check if pin correct -> contact card payment api -> if pin correct take money from account and return true
+//                double totalPrice = ScannedProducts.getTotalPrice();
+//                //todo check if pin correct -> contact card payment api -> if pin correct take money from account and return true
+//                String customersPin = tFieldPin.getText();
+//                //subtract bought items from stock (in flat database)
+//                updateStock(pData,products);
                 String customersPin = tFieldPin.getText();
-                //subtract bought items from stock (in flat database)
-                updateStock(pData,products);
-                //ask if user wants receipt
-                displayReceipt(false, products,0);
-                rightCl.show(rightPanel,"1");
-                clearScannedProducts(products.getAll());
+                boolean pinOk = CheckoutViewController.cardPayment(customersPin);
+                if (pinOk){
+                    //ask if user wants receipt
+                    displayReceipt(false, products,0);
+                    rightCl.show(rightPanel,"1");
+                    clearScannedProducts(products.getAll());
+                }else {
+                    JOptionPane.showMessageDialog(null,"Incorrect pin" + customersPin);
+                }
             }
         });
         btnPayCash.addActionListener(new ActionListener() {
@@ -214,8 +220,6 @@ public class UserGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 double totalPaid;
                 //todo cash payment functions
-                //add up all scanned products prices
-                //ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
                 double totalPrice = ScannedProducts.getTotalPrice();
                 //get text from field
@@ -227,8 +231,6 @@ public class UserGUI extends JFrame {
                 double changeDue = totalPaid-totalPrice;
                 if (changeDue>=0){
                     CheckoutViewController.cashPayment(products,totalPaid, totalPrice, changeDue);
-
-                    //updateStock(pData,products);
                     //ask if user wants receipt
                     displayReceipt(true, products,totalPaid);
                     rightCl.show(rightPanel,"1");
