@@ -181,8 +181,7 @@ public class UserGUI extends JFrame {
                 if(ScannedProducts.getTotalPrice() > 0){
                     Object[] options ={"Card","Cash","Cancel"};
                     int response = JOptionPane.showOptionDialog(null,"Would you Like to pay Cash or Card?",
-                            "Card or Cash", JOptionPane.YES_OPTION,JOptionPane.QUESTION_MESSAGE,null,
-                            options,options[2]);
+                            "Card or Cash", JOptionPane.YES_OPTION,JOptionPane.QUESTION_MESSAGE,null, options,options[2]);
                     //if cash
                     if (response == 0){ //if card
                         //show cardPaymentPanel
@@ -243,11 +242,8 @@ public class UserGUI extends JFrame {
                     totalPaid = 0;
                 }
                 double changeDue = totalPaid-totalPrice;
-
-                JOptionPane.showMessageDialog(null,"total paid: " + totalPaid + " total price: " + totalPrice + " Change Due: " + changeDue);
                 //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
                 if (changeDue>=0){
-                    JOptionPane.showMessageDialog(null,"correct");
                     updateStock(pData,products);
                     //ask if user wants receipt
                     displayReceipt(true, products,totalPaid);
@@ -264,45 +260,14 @@ public class UserGUI extends JFrame {
                 interfaceCl.show(interfacePanel,"2");
             }
         });
-        //todo add login functionality
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean isFound = true; //todo change to false
                 //get inputs
                 String userName = tFieldUserName.getText();
                 String password = tFieldPassword.getText();
-                //todo hash password
 
-                //todo search flat database for user with matching username and password -> if found return true
-
-                if (isFound){
-                    //show admin database view
-                    adminCl.show(adminPanel,"2");
-                    //populate all products
-                    allListModel.clear();
-                    lowStockListModel.clear();
-                    //get products from products array and add them to listModel
-                    for (Product p: ProductDataManager.getAllProducts()) {
-                        allListModel.addElement(p);
-                        //if stock less than 20 add to lowStock
-                        if (p.getStock()<=20){
-                            lowStockListModel.addElement(p);
-                        }
-                    }
-                    //Render Images and text
-                    //low stock
-                    jListLowStock.setCellRenderer(new ItemSelectRenderer());
-                    jListLowStock.setModel(lowStockListModel);
-                    //all
-                    jListAllProducts.setCellRenderer(new ItemSelectRenderer());
-                    jListAllProducts.setModel(allListModel);
-                    //populate low stock
-
-                }else {
-                    //else return wrong password message
-                    JOptionPane.showMessageDialog(null,"Unable to login please try again");
-                }
+                login(userName, password);
             }
         });
         btnExitAdmin.addActionListener(new ActionListener() {
@@ -515,6 +480,41 @@ public class UserGUI extends JFrame {
         }
     }
 
+    public void login(String userName, String Password){
+        boolean isFound = true; //todo change to false
+        //todo hash password
+
+        //todo search flat database for user with matching username and password -> if found return true
+
+        if (isFound){
+            //show admin database view
+            adminCl.show(adminPanel,"2");
+            //populate all products
+            allListModel.clear();
+            lowStockListModel.clear();
+            //get products from products array and add them to listModel
+            for (Product p: ProductDataManager.getAllProducts()) {
+                allListModel.addElement(p);
+                //if stock less than 20 add to lowStock
+                if (p.getStock()<=20){
+                    lowStockListModel.addElement(p);
+                }
+            }
+            //Render Images and text
+            //low stock
+            jListLowStock.setCellRenderer(new ItemSelectRenderer());
+            jListLowStock.setModel(lowStockListModel);
+            //all
+            jListAllProducts.setCellRenderer(new ItemSelectRenderer());
+            jListAllProducts.setModel(allListModel);
+            //populate low stock
+
+        }else {
+            //else return wrong password message
+            displayMessage("Unable to login please try again");
+        }
+    }
+
     public void displayProductDetails(String Barcode, String Name, String Img, double Price, int Stock){
         lblDetailsName.setText(Name);
         lblDetailsBarcode.setText("Barcode: " + Barcode);
@@ -573,7 +573,6 @@ public class UserGUI extends JFrame {
     public void orderProduct(String productOrdering, int numOrdering, double price){
         boolean isFound = false;
         double total = numOrdering * price;
-//                JOptionPane.showMessageDialog(null, String.format("The total price will be: £%.2f", total));
         //check if user is sure
         int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
         if(answer == 0){
