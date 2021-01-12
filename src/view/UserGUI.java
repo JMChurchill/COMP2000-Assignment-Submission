@@ -215,7 +215,7 @@ public class UserGUI extends JFrame {
                 double totalPaid;
                 //todo cash payment functions
                 //add up all scanned products prices
-                ProductDataManager pData = new ProductDataManager();
+                //ProductDataManager pData = new ProductDataManager();
                 ScannedProducts products = new ScannedProducts();
                 double totalPrice = ScannedProducts.getTotalPrice();
                 //get text from field
@@ -225,9 +225,10 @@ public class UserGUI extends JFrame {
                     totalPaid = 0;
                 }
                 double changeDue = totalPaid-totalPrice;
-                //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
                 if (changeDue>=0){
-                    updateStock(pData,products);
+                    CheckoutViewController.cashPayment(products,totalPaid, totalPrice, changeDue);
+
+                    //updateStock(pData,products);
                     //ask if user wants receipt
                     displayReceipt(true, products,totalPaid);
                     rightCl.show(rightPanel,"1");
@@ -434,35 +435,9 @@ public class UserGUI extends JFrame {
                 "Receipt?",
                 JOptionPane.YES_NO_OPTION);
         if (rQuestion == 0){
-//            //if yes display receipt in new window
-//            double price = 0;
-//            double total = 0;
-//            //create receipt message
-//            String message ="<html><u>Receipt</u></html> \n";
-//
-//            for (ScannedProduct sp:products.getAll()) {
-//                price = sp.getPrice() * sp.getQuantityScanned();
-//                total += price;
-//                message += sp.getName();
-//                message += String.format(" x " + sp.getQuantityScanned() + " £%.2f", price);
-//                message += "\n";
-//            }
-//            message += "===========\n";
-//            message += String.format("Total: £%.2f", total);
-//
-//            if (isCash){
-//                double change = totalPaid - total;
-//                message += "\n-----------\n";
-//                message += String.format("Cash: £%.2f", totalPaid);
-//                message += String.format("\nChange: £%.2f", change);
-//            }
             String message = CheckoutViewController.createReceiptMessage(isCash, products, totalPaid);
-
             //display popup
-            JOptionPane.showMessageDialog(null,
-                    message,
-                    "Receipt",
-                    JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, message, "Receipt", JOptionPane.PLAIN_MESSAGE);
         }
     }
 

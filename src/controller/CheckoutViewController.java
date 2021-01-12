@@ -50,9 +50,10 @@ public class CheckoutViewController {
         return allScanned;
     }
 
-    public static void cashPayment(double totalPaid, double changeDue){
+    public static void cashPayment(ScannedProducts products,double totalPaid, double totalPrice,double changeDue){
         ProductDataManager pData = new ProductDataManager();
-        ScannedProducts products = new ScannedProducts();
+        //ScannedProducts products = new ScannedProducts();
+        //todo make so cash paid is saved to a variable and if user has not paid enough allow them to add more to the current they have inserted
 
         updateStock(pData,products);
     }
