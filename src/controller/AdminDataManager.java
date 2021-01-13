@@ -55,7 +55,7 @@ public class AdminDataManager {
 
                 String[] adminData = data.split(separator);
 
-                int adminIdToInt = Integer.parseInt(adminData[0]);
+                //int adminIdToInt = Integer.parseInt(adminData[0]);
 
                 String currentUserName = adminData[1];
                 String currentPassword = adminData[2];

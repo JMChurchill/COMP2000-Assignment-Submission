@@ -46,9 +46,13 @@ public class LoginController {
 
         return userFound;
     }
-    public void logOut(){
+    public static void logOut(){
         //change login status to false
         loggedIn = false;
+    }
+
+    public static boolean isLoggedIn(){
+        return loggedIn;
     }
 
 

@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 
@@ -236,6 +234,12 @@ public class UserGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 interfaceCl.show(interfacePanel,"2");
+                showAdminPanel();
+//                if (LoginController.isLoggedIn()){
+//
+//                }else {
+//
+//                }
             }
         });
         btnLogin.addActionListener(new ActionListener() {
@@ -251,12 +255,14 @@ public class UserGUI extends JFrame {
         btnExitAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                LoginController.logOut();
                 interfaceCl.show(interfacePanel,"1");
             }
         });
         btnExitAdmin2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                LoginController.logOut();
                 interfaceCl.show(interfacePanel,"1");
             }
         });
@@ -336,16 +342,6 @@ public class UserGUI extends JFrame {
                 double price = Double.parseDouble(tFEditPrice.getText());
 //                tFEditImg.getText();//todo make so can edit img
 
-//                int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
-//                if (answer == 0){
-//                    boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price);
-//                    if (isFound){
-//                        //change card to details Panel
-//                        rightAdCl.show(rightAdPanel,"1");
-//                    }
-//                }
-
-
                 saveEditChanges(name,barcode,stock,price);
             }
         });
@@ -415,26 +411,8 @@ public class UserGUI extends JFrame {
 
         if (isFound){
             //show admin database view
-            adminCl.show(adminPanel,"2");
-            //populate all products
-            allListModel.clear();
-            lowStockListModel.clear();
-            //get products from products array and add them to listModel
-            for (Product p: ProductDataManager.getAllProducts()) {
-                allListModel.addElement(p);
-                //if stock less than 20 add to lowStock
-                if (p.getStock()<=20){
-                    lowStockListModel.addElement(p);
-                }
-            }
-            //Render Images and text
-            //low stock
-            jListLowStock.setCellRenderer(new ItemSelectRenderer());
-            jListLowStock.setModel(lowStockListModel);
-            //all
-            jListAllProducts.setCellRenderer(new ItemSelectRenderer());
-            //populate low stock
-            jListAllProducts.setModel(allListModel);
+            showAdminPanel();
+            updateStockLists();
 
         }else {
             //else return wrong password message
@@ -464,8 +442,30 @@ public class UserGUI extends JFrame {
         tFEditBarcode.setText(barcode);
         tFEditStock.setText(String.valueOf(stock));
         tFEditPrice.setText(String.valueOf(price));
-
     }
+
+    public void updateStockLists(){
+        //populate all products
+        allListModel.clear();
+        lowStockListModel.clear();
+        //get products from products array and add them to listModel
+        for (Product p: ProductDataManager.getAllProducts()) {
+            allListModel.addElement(p);
+            //if stock less than 20 add to lowStock
+            if (p.getStock()<=20){
+                lowStockListModel.addElement(p);
+            }
+        }
+        //Render Images and text
+        //low stock
+        jListLowStock.setCellRenderer(new ItemSelectRenderer());
+        jListLowStock.setModel(lowStockListModel);
+        //all
+        jListAllProducts.setCellRenderer(new ItemSelectRenderer());
+        //populate low stock
+        jListAllProducts.setModel(allListModel);
+    }
+
     public void saveEditChanges(String name, String barcode, int stock, double price){
         int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
         if (answer == 0){
@@ -497,6 +497,13 @@ public class UserGUI extends JFrame {
     public int displayConfirmDialog(String message,String title){
         int answer = JOptionPane.showConfirmDialog(null,message,title,JOptionPane.YES_NO_OPTION);
         return answer;
+    }
+    public void showAdminPanel(){//todo apply this method
+        if (LoginController.isLoggedIn()){
+            adminCl.show(adminPanel,"2");
+        } else {
+            adminCl.show(adminPanel,"1");
+        }
     }
 
 }
