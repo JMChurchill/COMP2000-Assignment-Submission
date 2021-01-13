@@ -40,6 +40,9 @@ public class ProductDataManager {
                 int quantityToInt = Integer.parseInt(productData[4]);
                 product.setStock(quantityToInt);
 
+                double wSPriceToDouble = Double.parseDouble(productData[5]);
+                product.setWholesalePrice(wSPriceToDouble);
+
                 products.add(product);
             }
             scanner.close();
@@ -74,6 +77,9 @@ public class ProductDataManager {
 
                 String QuantityToString = Integer.toString(products.get(i).getStock());
                 data += "|" + QuantityToString;
+
+                String wSPriceToString = Double.toString(products.get(i).getWholesalePrice());
+                data += "|" + wSPriceToString;
 
                 writer.write(data);
             }

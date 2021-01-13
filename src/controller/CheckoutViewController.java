@@ -61,7 +61,6 @@ public class CheckoutViewController {
     public static boolean cardPayment(String customersPin){
         boolean pinOk = checkPin(customersPin);
         if (pinOk){
-            //todo card payment functions
             //add up all scanned products prices
             ProductDataManager pData = new ProductDataManager();
             ScannedProducts products = new ScannedProducts();
@@ -85,8 +84,6 @@ public class CheckoutViewController {
         return pinCorrect;
     }
 
-
-
     public static void updateStock(ProductDataManager pData,ScannedProducts products){
         for (ScannedProduct sP:products.getAll()) {
             for (Product p: ProductDataManager.getAllProducts()) {
@@ -97,7 +94,6 @@ public class CheckoutViewController {
         }
         pData.save();
     }
-
 
     public static String createReceiptMessage(boolean isCash, ScannedProducts products, double totalPaid){
         double price = 0;
@@ -123,10 +119,4 @@ public class CheckoutViewController {
         }
         return message;
     }
-
-
-
-
-
-
 }

@@ -78,6 +78,10 @@ public class UserGUI extends JFrame {
     private JList jListLowStock;
     private JLabel lblImgage;
     private JPanel placeHolderPanel;
+    private JButton btnHint;
+    private JButton btnPinHint;
+    private JTextField tFEditWSPrice;
+    private JLabel lblDetailsWSPrice;
 
     //for switching between jPanels
     private final CardLayout interfaceCl = new CardLayout();
@@ -193,7 +197,6 @@ public class UserGUI extends JFrame {
         btnGo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                //todo card payment functions
                 ScannedProducts products = new ScannedProducts();
                 String customersPin = tFieldPin.getText();
                 boolean pinOk = CheckoutViewController.cardPayment(customersPin);
@@ -205,6 +208,12 @@ public class UserGUI extends JFrame {
                 }else {
                     displayMessage("Incorrect pin" + customersPin);
                 }
+            }
+        });
+        btnPinHint.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayMessage("pins: 1234 , 1010 , 2222");
             }
         });
         btnPayCash.addActionListener(new ActionListener() {
@@ -249,6 +258,13 @@ public class UserGUI extends JFrame {
                 login(userName, password);
             }
         });
+        btnHint.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayMessage("Hint: username = user and password = password");
+            }
+        });
+
         btnExitAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -273,7 +289,7 @@ public class UserGUI extends JFrame {
                 lblOrderBarcode.setText(lblDetailsBarcode.getText());
                 lblOrderSoldPrice.setText(lblDetailsPrice.getText());
                 lblOrderCurStock.setText(lblDetailsStock.getText());
-                lblOrderCostPProd.setText("Cost per Product: N/A");//add later
+                lblOrderCostPProd.setText(lblDetailsWSPrice.getText());
 
                 //todo create a listener that updates order total whenever tFNumOrder changes
             }
@@ -307,8 +323,9 @@ public class UserGUI extends JFrame {
                 String Img = ((Product)jListLowStock.getSelectedValue()).getImage();
                 double Price = ((Product)jListLowStock.getSelectedValue()).getPrice();
                 int Stock = ((Product)jListLowStock.getSelectedValue()).getStock();
+                double wholesalePrice = ((Product) jListLowStock.getSelectedValue()).getWholesalePrice();
 
-                displayProductDetails(Barcode,Name,Img,Price,Stock);
+                displayProductDetails(Barcode,Name,Img,Price,Stock,wholesalePrice);
             }
         });
         jListAllProducts.addMouseListener(new MouseAdapter() {
@@ -320,8 +337,9 @@ public class UserGUI extends JFrame {
                 String Img = ((Product)jListAllProducts.getSelectedValue()).getImage();
                 double Price = ((Product)jListAllProducts.getSelectedValue()).getPrice();
                 int Stock = ((Product)jListAllProducts.getSelectedValue()).getStock();
+                double wholesalePrice = ((Product)jListAllProducts.getSelectedValue()).getWholesalePrice();
 
-                displayProductDetails(Barcode,Name,Img,Price,Stock);
+                displayProductDetails(Barcode,Name,Img,Price,Stock,wholesalePrice);
             }
         });
         btnConfirmEdit.addActionListener(new ActionListener() {
@@ -334,8 +352,9 @@ public class UserGUI extends JFrame {
                 int stock = Integer.parseInt(tFEditStock.getText());
                 double price = Double.parseDouble(tFEditPrice.getText());
                 String image = tFEditImg.getText();
+                double wholesalePrice = Double.parseDouble(tFEditWSPrice.getText());
 
-                saveEditChanges(name,barcode,stock,price,image);
+                saveEditChanges(name,barcode,stock,price,image,wholesalePrice);
             }
         });
         btnOrderProduct.addActionListener(new ActionListener() {
@@ -345,8 +364,9 @@ public class UserGUI extends JFrame {
                 String productOrdering = lblOrderBarcode.getText().replaceAll("\\D+","");//parse lbl for numbers
                 int numOrdering = Integer.parseInt(tFNumOrder.getText());
                 double price = Double.parseDouble(lblOrderSoldPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+                double wholesalePrice = Double.parseDouble(lblOrderCostPProd.getText().replaceAll("[^\\\\.0123456789]",""));
 
-                orderProduct(productOrdering,numOrdering,price);
+                orderProduct(productOrdering,numOrdering,price,wholesalePrice);
             }
         });
     }
@@ -409,11 +429,12 @@ public class UserGUI extends JFrame {
         }
     }
 
-    public void displayProductDetails(String Barcode, String Name, String Img, double Price, int Stock){
+    public void displayProductDetails(String Barcode, String Name, String Img, double Price, int Stock,double wholesalePrice){
         lblDetailsName.setText(Name);
         lblDetailsBarcode.setText("Barcode: " + Barcode);
         lblDetailsStock.setText("Stock: " + Stock);
         lblDetailsPrice.setText(String.format("Price: £%.2f", Price));
+        lblDetailsWSPrice.setText(String.format("Wholesale Price: £%.2f",wholesalePrice));
 
         ImageRenderer renderer = new ImageRenderer();
         lblImgage.setIcon(new ImageIcon(renderer.urlToImage(Img)));
@@ -426,12 +447,11 @@ public class UserGUI extends JFrame {
         String barcode = lblDetailsBarcode.getText().replaceAll("\\D+","");
         int stock = Integer.parseInt(lblDetailsStock.getText().replaceAll("\\D+",""));
         double price = Double.parseDouble(lblDetailsPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+        double wholesalePrice = Double.parseDouble(lblDetailsWSPrice.getText().replaceAll("[^\\\\.0123456789]",""));
 
-        //todo add photo
-
-        populateEditView(name,barcode,stock,price);
+        populateEditView(name,barcode,stock,price,wholesalePrice);
     }
-    public void populateEditView(String name,String barcode,int stock,double price){
+    public void populateEditView(String name,String barcode,int stock,double price,double wholesalePrice){
         String imageUrl = AdminViewController.getImageUrl(barcode);
 
         tFEditName.setText(name);
@@ -439,6 +459,7 @@ public class UserGUI extends JFrame {
         tFEditStock.setText(String.valueOf(stock));
         tFEditPrice.setText(String.valueOf(price));
         tFEditImg.setText(imageUrl);
+        tFEditWSPrice.setText(String.valueOf(wholesalePrice));
     }
 
     public void updateStockLists(){
@@ -462,23 +483,23 @@ public class UserGUI extends JFrame {
         jListAllProducts.setModel(allListModel);
     }
 
-    public void saveEditChanges(String name, String barcode, int stock, double price,String image){
+    public void saveEditChanges(String name, String barcode, int stock, double price,String image,double wholesalePrice){
         int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
         if (answer == 0){
-            boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price,image);
+            boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price,image,wholesalePrice);
             if (isFound){
-                updateStockLists();//todo jump
+                updateStockLists();
                 //change card to details Panel
                 rightAdCl.show(rightAdPanel,"4");
             }
         }
     }
-    public void orderProduct(String productOrdering, int numOrdering, double price){
-        double total = numOrdering * price;
+    public void orderProduct(String productOrdering, int numOrdering, double price, double wholesalePrice){
+        double total = numOrdering * wholesalePrice;
         //check if user is sure
         int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
         if (answer == 0){
-            boolean isFound = AdminViewController.orderProduct(productOrdering,numOrdering,price);
+            boolean isFound = AdminViewController.orderProduct(productOrdering,numOrdering,price,wholesalePrice);
             if (isFound){
                 displayMessage("Product updated");
                 rightAdCl.show(rightAdPanel,"4");
@@ -488,7 +509,6 @@ public class UserGUI extends JFrame {
             }
         }
     }
-
     public void displayMessage(String message){
         JOptionPane.showMessageDialog(null,message);
     }
@@ -500,6 +520,8 @@ public class UserGUI extends JFrame {
         if (LoginController.isLoggedIn()){
             adminCl.show(adminPanel,"2");
         } else {
+            tFieldUserName.setText("");
+            tFieldPassword.setText("");
             adminCl.show(adminPanel,"1");
         }
     }

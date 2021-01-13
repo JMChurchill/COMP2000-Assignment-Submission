@@ -8,14 +8,17 @@ public class Product {
     private String Image;
     private double Price;
     private int Stock;
+    private double WholesalePrice;
+
     public Product() {}
 
-    public Product(String barcode,String name, String image, double price, int quantity) {
+    public Product(String barcode,String name, String image, double price, int quantity, double wholesalePrice) {
         Barcode = barcode;
         Name = name;
         Image = image;
         Price = price;
         Stock = quantity;
+        WholesalePrice = wholesalePrice;
     }
 
     public String getBarcode() {
@@ -56,6 +59,14 @@ public class Product {
 
     public void setStock(int stock) {
         Stock = stock;
+    }
+
+    public double getWholesalePrice() {
+        return WholesalePrice;
+    }
+
+    public void setWholesalePrice(double wholesalePrice) {
+        WholesalePrice = wholesalePrice;
     }
 
 }

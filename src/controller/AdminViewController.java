@@ -5,7 +5,7 @@ import model.Product;
 import javax.swing.*;
 
 public class AdminViewController {
-    public static boolean orderProduct(String productOrdering, int numOrdering, double price){
+    public static boolean orderProduct(String productOrdering, int numOrdering, double price,double wholesalePrice){
         boolean isFound = false;
         //edit file
         for (Product p:ProductDataManager.getAllProducts()) {
@@ -38,7 +38,7 @@ public class AdminViewController {
         return imageUrl;
     }
 
-    public static boolean saveEditChanges(String name, String barcode, int stock, double price,String image){
+    public static boolean saveEditChanges(String name, String barcode, int stock, double price,String image, double wholesalePrice){
         boolean isFound = false;
         //loop through array and search for matching barcode
         for (Product p:ProductDataManager.getAllProducts()) {
@@ -48,6 +48,7 @@ public class AdminViewController {
                 p.setStock(stock);
                 p.setPrice(price);
                 p.setImage(image);
+                p.setWholesalePrice(wholesalePrice);
                 isFound = true;
                 break;
             }
@@ -62,12 +63,8 @@ public class AdminViewController {
             //display error message
             JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
         }
-        //todo refresh rightAdPanel
-
         return isFound;
-
     }
-
     public static void refreshAdminView(){
 
     }

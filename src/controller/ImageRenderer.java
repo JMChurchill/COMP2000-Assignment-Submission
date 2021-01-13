@@ -16,12 +16,12 @@ public class ImageRenderer extends JListRenderer{
             URL url = new URL(imageURL);
             //convert url to image
             Image urlToImg = ImageIO.read(url);
-            //calculate new width given height = 220
+            //calculate new width given height = 200
             int newWidth = calcNewWidth(urlToImg,200);
 
             BufferedImage img = resizeImg(newWidth, 200, urlToImg);
 
-//            //resize image
+            //resize image
             //BufferedImage img = (BufferedImage) urlToImg;
             return img;
         } catch (MalformedURLException e) {
