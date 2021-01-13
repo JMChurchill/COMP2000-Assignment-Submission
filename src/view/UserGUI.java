@@ -336,6 +336,16 @@ public class UserGUI extends JFrame {
                 double price = Double.parseDouble(tFEditPrice.getText());
 //                tFEditImg.getText();//todo make so can edit img
 
+//                int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
+//                if (answer == 0){
+//                    boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price);
+//                    if (isFound){
+//                        //change card to details Panel
+//                        rightAdCl.show(rightAdPanel,"1");
+//                    }
+//                }
+
+
                 saveEditChanges(name,barcode,stock,price);
             }
         });
@@ -457,34 +467,13 @@ public class UserGUI extends JFrame {
 
     }
     public void saveEditChanges(String name, String barcode, int stock, double price){
-        boolean isFound = false;
         int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
         if (answer == 0){
-            //loop through array and search for matching barcode
-            for (Product p:ProductDataManager.getAllProducts()) {
-                if (p.getBarcode().equals(barcode)){
-                    //edit product details with edited values
-                    p.setName(name);
-                    p.setStock(stock);
-                    p.setPrice(price);
-                    isFound = true;
-                    break;
-                }
-            }
+            boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price);
             if (isFound){
-                //save product array to text file
-                ProductDataManager pdata = new ProductDataManager();
-                pdata.save();
-                JOptionPane.showMessageDialog(null,"Product Edited");
-
-            }else{
-                //display error message
-                JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
+                //change card to details Panel
+                rightAdCl.show(rightAdPanel,"1");
             }
-            //todo refresh rightAdPanel
-
-            //change card to details Panel
-            rightAdCl.show(rightAdPanel,"1");
         }
     }
     public void orderProduct(String productOrdering, int numOrdering, double price){
