@@ -77,6 +77,7 @@ public class UserGUI extends JFrame {
     private JList jListAllProducts;
     private JList jListLowStock;
     private JLabel lblImgage;
+    private JPanel placeHolderPanel;
 
     //for switching between jPanels
     private final CardLayout interfaceCl = new CardLayout();
@@ -84,12 +85,10 @@ public class UserGUI extends JFrame {
     private final CardLayout adminCl = new CardLayout();
     private final CardLayout rightAdCl = new CardLayout();
 
-
     DefaultListModel listModel = new DefaultListModel();
     DefaultListModel ScannedListModel = new DefaultListModel();
     DefaultListModel allListModel = new DefaultListModel();
     DefaultListModel lowStockListModel = new DefaultListModel();
-
 
     public UserGUI() {
         //setup Interface
@@ -119,8 +118,9 @@ public class UserGUI extends JFrame {
         rightAdPanel.add(detailsPanel,"1");
         rightAdPanel.add(editDetailsPanel,"2");
         rightAdPanel.add(orderPanel,"3");
+        rightAdPanel.add(placeHolderPanel,"4");
 
-        rightAdCl.show(rightAdPanel,"1");
+        rightAdCl.show(rightAdPanel,"4");
 
 
         initialiseComponents();
@@ -467,8 +467,9 @@ public class UserGUI extends JFrame {
         if (answer == 0){
             boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price,image);
             if (isFound){
+                updateStockLists();//todo jump
                 //change card to details Panel
-                rightAdCl.show(rightAdPanel,"1");
+                rightAdCl.show(rightAdPanel,"4");
             }
         }
     }
@@ -480,7 +481,8 @@ public class UserGUI extends JFrame {
             boolean isFound = AdminViewController.orderProduct(productOrdering,numOrdering,price);
             if (isFound){
                 displayMessage("Product updated");
-                rightAdCl.show(rightAdPanel,"1");
+                rightAdCl.show(rightAdPanel,"4");
+                updateStockLists();
             } else {
                 displayMessage("Product not found");
             }
@@ -494,7 +496,7 @@ public class UserGUI extends JFrame {
         int answer = JOptionPane.showConfirmDialog(null,message,title,JOptionPane.YES_NO_OPTION);
         return answer;
     }
-    public void showAdminPanel(){//todo apply this method
+    public void showAdminPanel(){
         if (LoginController.isLoggedIn()){
             adminCl.show(adminPanel,"2");
         } else {
