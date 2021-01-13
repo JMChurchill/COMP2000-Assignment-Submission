@@ -12,7 +12,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 
-public class UserGUI extends JFrame {
+public class UserGUI extends AbstractView {
     private JPanel mainPanel;
     private JLabel totalLbl;
     private JButton btnFinish;
@@ -123,8 +123,11 @@ public class UserGUI extends JFrame {
 
         rightAdCl.show(rightAdPanel,"4");
 
+        setContentPane(mainPanel);
+        initialise();
+//        initialiseComponents();
+        populateListModel();
 
-        initialiseComponents();
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
