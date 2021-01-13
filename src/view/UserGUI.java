@@ -151,7 +151,6 @@ public class UserGUI extends AbstractView {
                 //values
                 String barcode = ((ScannedProduct)ScannedItemJList.getSelectedValue()).getBarcode();
                 int QuantityScanned;
-
                 int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");//todo remove cancel option
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
@@ -199,14 +198,17 @@ public class UserGUI extends AbstractView {
             public void actionPerformed(ActionEvent e) {
                 ScannedProducts products = new ScannedProducts();
                 String customersPin = tFieldPin.getText();
-                boolean pinOk = CheckoutViewController.cardPayment(customersPin);
-                if (pinOk){
-                    //ask if user wants receipt
-                    displayReceipt(false, products,0);
+//                boolean pinOk = CheckoutViewController.cardPayment(customersPin);
+                double totalPrice = ScannedProducts.getTotalPrice();
+
+                CardPayment payment = new CardPayment();
+                String message = payment.makePayment(customersPin,0,totalPrice);//0 in field that is not needed
+                if (payment.isPaidFor()){
+                    displayReceipt(message);
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
-                }else {
-                    displayMessage("Incorrect pin" + customersPin);
+                }else{
+                    displayMessage("Incorrect pin");
                 }
             }
         });
@@ -229,16 +231,18 @@ public class UserGUI extends AbstractView {
                 } catch (Exception ex){
                     totalPaid = 0;
                 }
-                double changeDue = totalPaid-totalPrice;
-                if (changeDue>=0){
-                    CheckoutViewController.cashPayment(products,totalPaid, totalPrice, changeDue);
-                    //ask if user wants receipt
-                    displayReceipt(true, products,totalPaid);
+
+                CashPayment payment = new CashPayment();
+                String message = payment.makePayment(null,totalPaid,totalPrice);
+                if (payment.isPaidFor()){
+                    displayReceipt(message);
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
-                } else{
+                }else{
                     displayMessage("Please insert more cash");
                 }
+
+
             }
         });
         btnAdminView.addActionListener(new ActionListener() {
@@ -387,14 +391,6 @@ public class UserGUI extends AbstractView {
 //        });
     }
 
-    private void initialiseComponents(){
-        setContentPane(mainPanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(1500,800));
-        setTitle("Checkout");
-        pack();
-        populateListModel();
-    }
     public void populateListModel(){
         listModel.clear();
         ProductDataManager dataManager = new ProductDataManager();
@@ -420,13 +416,8 @@ public class UserGUI extends AbstractView {
         scannedArray.clear();
         populateScannedJList(scannedArray);
     }
-    public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
-        int rQuestion = JOptionPane.showConfirmDialog(null,
-                "Would you like a receipt?", "Receipt?",
-                JOptionPane.YES_NO_OPTION);
-        if (rQuestion == 0){
-            String message = CheckoutViewController.createReceiptMessage(isCash, products, totalPaid);
-            //display popup
+    public void displayReceipt(String message){
+        if (message != null){
             JOptionPane.showMessageDialog(null, message, "Receipt", JOptionPane.PLAIN_MESSAGE);
         }
     }
