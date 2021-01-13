@@ -1,4 +1,4 @@
-package controller;
+package model;
 
 import model.Product;
 import java.io.File;
@@ -70,7 +70,6 @@ public class ProductDataManager {
                 data += "|";
 
                 data += products.get(i).getImage();
-
 
                 String priceToString = Double.toString(products.get(i).getPrice());
                 data += "|" + priceToString;

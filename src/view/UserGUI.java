@@ -2,13 +2,13 @@ package view;
 
 import controller.*;
 import model.Product;
+import model.ProductDataManager;
 import model.ScannedProduct;
 import model.ScannedProducts;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 

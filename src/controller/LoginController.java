@@ -1,16 +1,9 @@
 package controller;
 
-import javax.crypto.*;
-import javax.crypto.spec.PBEKeySpec;
-import javax.swing.*;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
+import model.AdminDataManager;
+
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Arrays;
 
 public class LoginController {
     private static boolean loggedIn = false;

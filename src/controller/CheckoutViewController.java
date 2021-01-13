@@ -1,6 +1,7 @@
 package controller;
 
 import model.Product;
+import model.ProductDataManager;
 import model.ScannedProduct;
 import model.ScannedProducts;
 

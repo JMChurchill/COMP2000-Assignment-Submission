@@ -1,6 +1,7 @@
 package controller;
 
 import model.Product;
+import model.ProductDataManager;
 
 import javax.swing.*;
 
@@ -8,7 +9,7 @@ public class AdminViewController {
     public static boolean orderProduct(String productOrdering, int numOrdering, double price,double wholesalePrice){
         boolean isFound = false;
         //edit file
-        for (Product p:ProductDataManager.getAllProducts()) {
+        for (Product p: ProductDataManager.getAllProducts()) {
             if (p.getBarcode().equals(productOrdering)){
                 int stock = numOrdering + p.getStock();
                 p.setStock(stock);
