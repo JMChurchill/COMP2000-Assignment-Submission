@@ -102,14 +102,7 @@ public class AdminDataManager implements DataManager{
             e.printStackTrace();
         }
     }
-
-    public AdminUser getAdminAt(int index){
-        if (index >= admins.size()){
-            return null;
-        }
-        return admins.get(index);
-    }
-
+//for future implementation
     public void addAdmin(AdminUser newAdmin){
         admins.add(newAdmin);
     }

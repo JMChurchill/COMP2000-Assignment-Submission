@@ -126,7 +126,7 @@ public class UserGUI extends AbstractView {
         setContentPane(mainPanel);
         initialise();
 //        initialiseComponents();
-        populateListModel();
+        updateListModel();
 
         ItemSelectJList.addMouseListener(new MouseAdapter() {
             @Override
@@ -139,7 +139,7 @@ public class UserGUI extends AbstractView {
                 int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
                 if (Stock > 0){
-                    populateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price));
+                    updateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price));
                 } else{
                     displayMessage("Sorry this Item is Out of Stock");
                 }
@@ -154,7 +154,7 @@ public class UserGUI extends AbstractView {
                 int response = JOptionPane.showConfirmDialog(null,"Would you like to delete this item?");//todo remove cancel option
                 //if yes remove item/reduce quantity of item from array
                 if (response == 0){
-                    populateScannedJList(CheckoutViewController.removeProductFromScanned(barcode));
+                    updateScannedJList(CheckoutViewController.removeProductFromScanned(barcode));
                 }
             }
         });
@@ -241,8 +241,6 @@ public class UserGUI extends AbstractView {
                 }else{
                     displayMessage("Please insert more cash");
                 }
-
-
             }
         });
         btnAdminView.addActionListener(new ActionListener() {
@@ -391,7 +389,7 @@ public class UserGUI extends AbstractView {
 //        });
     }
 
-    public void populateListModel(){
+    public void updateListModel(){
         listModel.clear();
         ProductDataManager dataManager = new ProductDataManager();
         dataManager.load();
@@ -403,7 +401,7 @@ public class UserGUI extends AbstractView {
         ItemSelectJList.setCellRenderer(new ItemSelectRenderer());
         ItemSelectJList.setModel(listModel);
     }
-    public void populateScannedJList(ArrayList<ScannedProduct> allScanned){
+    public void updateScannedJList(ArrayList<ScannedProduct> allScanned){
         ScannedListModel.clear();
         for (ScannedProduct i:allScanned) {
             ScannedListModel.addElement(i);
@@ -414,7 +412,7 @@ public class UserGUI extends AbstractView {
     }
     public void clearScannedProducts(ArrayList<ScannedProduct> scannedArray){
         scannedArray.clear();
-        populateScannedJList(scannedArray);
+        updateScannedJList(scannedArray);
     }
     public void displayReceipt(String message){
         if (message != null){
@@ -456,9 +454,9 @@ public class UserGUI extends AbstractView {
         double price = Double.parseDouble(lblDetailsPrice.getText().replaceAll("[^\\\\.0123456789]",""));
         double wholesalePrice = Double.parseDouble(lblDetailsWSPrice.getText().replaceAll("[^\\\\.0123456789]",""));
 
-        populateEditView(name,barcode,stock,price,wholesalePrice);
+        updateEditView(name,barcode,stock,price,wholesalePrice);
     }
-    public void populateEditView(String name,String barcode,int stock,double price,double wholesalePrice){
+    public void updateEditView(String name, String barcode, int stock, double price, double wholesalePrice){
         String imageUrl = AdminViewController.getImageUrl(barcode);
 
         tFEditName.setText(name);
@@ -532,5 +530,4 @@ public class UserGUI extends AbstractView {
             adminCl.show(adminPanel,"1");
         }
     }
-
 }

@@ -92,7 +92,7 @@ public class ProductDataManager implements DataManager{
         }
     }
 
-
+//for future implementation
     public void addProduct(Product newProduct){
         products.add(newProduct);
     }
