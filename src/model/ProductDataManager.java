@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ProductDataManager {
+public class ProductDataManager implements DataManager{
 //    public String filePath = "resources/ProductData.txt";
     public String filePath = "resources/ProductDataTest.txt";
     public String separator = "\\|";
@@ -16,6 +16,7 @@ public class ProductDataManager {
     private static final ArrayList<Product> products = new ArrayList<>();
 
     //get data from ProductData
+    @Override
     public void load(){
         try {
             File file = new File(filePath);
@@ -52,6 +53,7 @@ public class ProductDataManager {
         }
     }
 
+    @Override
     public void save(){
         try {
             FileWriter writer = new FileWriter(filePath);

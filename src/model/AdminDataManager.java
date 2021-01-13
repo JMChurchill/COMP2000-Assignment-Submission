@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AdminDataManager {
+public class AdminDataManager implements DataManager{
     public String filePath = "resources/AdminData.txt";
     public String separator = "\\|";
 
@@ -16,6 +16,7 @@ public class AdminDataManager {
 
     //get data from AdminData
 
+    @Override
     public void load(){
         try {
             File file = new File(filePath);
@@ -73,7 +74,7 @@ public class AdminDataManager {
         return isFound;
     }
 
-
+    @Override
     public void save(){
         try {
             FileWriter writer = new FileWriter(filePath);

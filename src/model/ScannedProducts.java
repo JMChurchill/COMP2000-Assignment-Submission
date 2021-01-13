@@ -17,13 +17,6 @@ public class ScannedProducts {
         allScanned.remove(oldScan);
     }
 
-    public ScannedProduct getScannedAt(int index){
-        if (index >= allScanned.size()){
-            return null;
-        }
-        return allScanned.get(index);
-    }
-
     public static double getTotalPrice(){
         double totalPrice = 0;
         if (allScanned.isEmpty()){
@@ -35,7 +28,5 @@ public class ScannedProducts {
         }
         return totalPrice;
     }
-
-
 
 }
