@@ -357,8 +357,6 @@ public class UserGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1500,800));
         setTitle("Checkout");
-//        ImageIcon image = new ImageIcon(""); //create an image icon
-//        setIconImage(image.getImage()); //change icon of frame
         pack();
         populateListModel();
     }
@@ -490,26 +488,15 @@ public class UserGUI extends JFrame {
         }
     }
     public void orderProduct(String productOrdering, int numOrdering, double price){
-        boolean isFound = false;
         double total = numOrdering * price;
         //check if user is sure
         int answer = JOptionPane.showConfirmDialog(null,String.format("The total price will be: £%.2f. Do you still want to order?", total),"Confirm",JOptionPane.YES_NO_OPTION);
-        if(answer == 0){
-            //edit file
-            for (Product p:ProductDataManager.getAllProducts()) {
-                if (p.getBarcode().equals(productOrdering)){
-                    int stock = numOrdering + p.getStock();
-                    p.setStock(stock);
-                    isFound = true;
-                    break;
-                }
-            }
-            if (isFound) {
-                ProductDataManager pData = new ProductDataManager();
-                pData.save();
+        if (answer == 0){
+            boolean isFound = AdminViewController.orderProduct(productOrdering,numOrdering,price);
+            if (isFound){
                 JOptionPane.showMessageDialog(null,"Product updated");
                 rightAdCl.show(rightAdPanel,"1");
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null,"Product not found");
             }
         }
