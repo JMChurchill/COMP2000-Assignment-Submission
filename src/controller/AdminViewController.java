@@ -19,8 +19,6 @@ public class AdminViewController {
         if (isFound) {
             ProductDataManager pData = new ProductDataManager();
             pData.save();
-//                JOptionPane.showMessageDialog(null,"Product updated");
-//                rightAdCl.show(rightAdPanel,"1");
         }else{
             JOptionPane.showMessageDialog(null,"Product not found");
         }
@@ -64,8 +62,5 @@ public class AdminViewController {
             JOptionPane.showMessageDialog(null,"The product you were trying to edit was not found");
         }
         return isFound;
-    }
-    public static void refreshAdminView(){
-
     }
 }

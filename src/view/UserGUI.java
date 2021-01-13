@@ -7,10 +7,7 @@ import model.ScannedProducts;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -369,6 +366,22 @@ public class UserGUI extends JFrame {
                 orderProduct(productOrdering,numOrdering,price,wholesalePrice);
             }
         });
+//        tFNumOrder.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                super.keyTyped(e);
+//                String numOrdered = tFNumOrder.getText();
+//                try {
+//                    int intNumOrdered = Integer.parseInt(tFNumOrder.getText());
+//                    double wholesalePrice = Double.parseDouble(lblOrderCostPProd.getText().replaceAll("[^\\\\.0123456789]",""));
+//                    double total = intNumOrdered * wholesalePrice;
+//                    lblOrderTotal.setText(String.valueOf(total));
+//                } catch (Exception ex){
+//
+//                }
+//
+//            }
+//        });
     }
 
     private void initialiseComponents(){
