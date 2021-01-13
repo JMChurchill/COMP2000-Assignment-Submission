@@ -85,12 +85,6 @@ public class ProductDataManager {
         }
     }
 
-    public Product getProductAt(int index){
-        if (index >= products.size()){
-            return null;
-        }
-        return products.get(index);
-    }
 
     public void addProduct(Product newProduct){
         products.add(newProduct);

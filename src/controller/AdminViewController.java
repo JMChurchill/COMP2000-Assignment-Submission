@@ -26,7 +26,19 @@ public class AdminViewController {
         }
         return isFound;
     }
-    public static boolean saveEditChanges(String name, String barcode, int stock, double price){
+    public static String getImageUrl(String barcode){
+        String imageUrl = null;
+
+        for (Product p:ProductDataManager.getAllProducts()) {
+            if (p.getBarcode().equals(barcode)){
+                imageUrl = p.getImage();
+                break;
+            }
+        }
+        return imageUrl;
+    }
+
+    public static boolean saveEditChanges(String name, String barcode, int stock, double price,String image){
         boolean isFound = false;
         //loop through array and search for matching barcode
         for (Product p:ProductDataManager.getAllProducts()) {
@@ -35,6 +47,7 @@ public class AdminViewController {
                 p.setName(name);
                 p.setStock(stock);
                 p.setPrice(price);
+                p.setImage(image);
                 isFound = true;
                 break;
             }

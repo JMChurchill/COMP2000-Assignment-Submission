@@ -23,8 +23,8 @@ public class ScannedItemRenderer extends JListRenderer implements ListCellRender
             URL url = new URL(is.getImage());
             //convert url to image
             Image urlToImg = ImageIO.read(url);
-            //calculate new width given height = 220
-            int newWidth = calcNewWidth(urlToImg);
+            //calculate new width given height = 100
+            int newWidth = calcNewWidth(urlToImg,100);
                 //resize image
             BufferedImage img = resizeImg(newWidth, 100, urlToImg);
             setIcon(new ImageIcon(img));

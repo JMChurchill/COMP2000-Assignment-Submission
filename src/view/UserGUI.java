@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -75,6 +76,7 @@ public class UserGUI extends JFrame {
     private JLabel lblOrderTotal;
     private JList jListAllProducts;
     private JList jListLowStock;
+    private JLabel lblImgage;
 
     //for switching between jPanels
     private final CardLayout interfaceCl = new CardLayout();
@@ -135,7 +137,7 @@ public class UserGUI extends JFrame {
                 if (Stock > 0){
                     populateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price));
                 } else{
-                    JOptionPane.showMessageDialog(null,"Sorry this Item is Out of Stock");
+                    displayMessage("Sorry this Item is Out of Stock");
                 }
             }
         });
@@ -171,7 +173,7 @@ public class UserGUI extends JFrame {
                         rightCl.show(rightPanel,"3");
                     }
                 }else{
-                    JOptionPane.showMessageDialog(null,"Please scan an item");
+                    displayMessage("Please scan an item");
                 }
             }
         });
@@ -201,7 +203,7 @@ public class UserGUI extends JFrame {
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
                 }else {
-                    JOptionPane.showMessageDialog(null,"Incorrect pin" + customersPin);
+                    displayMessage("Incorrect pin" + customersPin);
                 }
             }
         });
@@ -226,7 +228,7 @@ public class UserGUI extends JFrame {
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
                 } else{
-                    JOptionPane.showMessageDialog(null,"Please insert more cash");
+                    displayMessage("Please insert more cash");
                 }
             }
         });
@@ -235,11 +237,6 @@ public class UserGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 interfaceCl.show(interfacePanel,"2");
                 showAdminPanel();
-//                if (LoginController.isLoggedIn()){
-//
-//                }else {
-//
-//                }
             }
         });
         btnLogin.addActionListener(new ActionListener() {
@@ -311,8 +308,6 @@ public class UserGUI extends JFrame {
                 double Price = ((Product)jListLowStock.getSelectedValue()).getPrice();
                 int Stock = ((Product)jListLowStock.getSelectedValue()).getStock();
 
-                rightAdCl.show(rightAdPanel,"1");
-
                 displayProductDetails(Barcode,Name,Img,Price,Stock);
             }
         });
@@ -326,8 +321,6 @@ public class UserGUI extends JFrame {
                 double Price = ((Product)jListAllProducts.getSelectedValue()).getPrice();
                 int Stock = ((Product)jListAllProducts.getSelectedValue()).getStock();
 
-                rightAdCl.show(rightAdPanel,"1");
-
                 displayProductDetails(Barcode,Name,Img,Price,Stock);
             }
         });
@@ -340,9 +333,9 @@ public class UserGUI extends JFrame {
                 String barcode = tFEditBarcode.getText();//need to enable editable when converting method to edit barcode
                 int stock = Integer.parseInt(tFEditStock.getText());
                 double price = Double.parseDouble(tFEditPrice.getText());
-//                tFEditImg.getText();//todo make so can edit img
+                String image = tFEditImg.getText();
 
-                saveEditChanges(name,barcode,stock,price);
+                saveEditChanges(name,barcode,stock,price,image);
             }
         });
         btnOrderProduct.addActionListener(new ActionListener() {
@@ -392,10 +385,8 @@ public class UserGUI extends JFrame {
         populateScannedJList(scannedArray);
     }
     public void displayReceipt(boolean isCash, ScannedProducts products,double totalPaid){
-        int rQuestion = JOptionPane.showConfirmDialog(
-                null,
-                "Would you like a receipt?",
-                "Receipt?",
+        int rQuestion = JOptionPane.showConfirmDialog(null,
+                "Would you like a receipt?", "Receipt?",
                 JOptionPane.YES_NO_OPTION);
         if (rQuestion == 0){
             String message = CheckoutViewController.createReceiptMessage(isCash, products, totalPaid);
@@ -413,9 +404,7 @@ public class UserGUI extends JFrame {
             //show admin database view
             showAdminPanel();
             updateStockLists();
-
         }else {
-            //else return wrong password message
             displayMessage("Unable to login please try again");
         }
     }
@@ -425,7 +414,11 @@ public class UserGUI extends JFrame {
         lblDetailsBarcode.setText("Barcode: " + Barcode);
         lblDetailsStock.setText("Stock: " + Stock);
         lblDetailsPrice.setText(String.format("Price: £%.2f", Price));
-        //todo display img
+
+        ImageRenderer renderer = new ImageRenderer();
+        lblImgage.setIcon(new ImageIcon(renderer.urlToImage(Img)));
+
+        rightAdCl.show(rightAdPanel,"1");
     }
 
     public void getSelectedEditDetails(){
@@ -433,15 +426,19 @@ public class UserGUI extends JFrame {
         String barcode = lblDetailsBarcode.getText().replaceAll("\\D+","");
         int stock = Integer.parseInt(lblDetailsStock.getText().replaceAll("\\D+",""));
         double price = Double.parseDouble(lblDetailsPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+
         //todo add photo
 
         populateEditView(name,barcode,stock,price);
     }
     public void populateEditView(String name,String barcode,int stock,double price){
+        String imageUrl = AdminViewController.getImageUrl(barcode);
+
         tFEditName.setText(name);
         tFEditBarcode.setText(barcode);
         tFEditStock.setText(String.valueOf(stock));
         tFEditPrice.setText(String.valueOf(price));
+        tFEditImg.setText(imageUrl);
     }
 
     public void updateStockLists(){
@@ -456,7 +453,6 @@ public class UserGUI extends JFrame {
                 lowStockListModel.addElement(p);
             }
         }
-        //Render Images and text
         //low stock
         jListLowStock.setCellRenderer(new ItemSelectRenderer());
         jListLowStock.setModel(lowStockListModel);
@@ -466,10 +462,10 @@ public class UserGUI extends JFrame {
         jListAllProducts.setModel(allListModel);
     }
 
-    public void saveEditChanges(String name, String barcode, int stock, double price){
+    public void saveEditChanges(String name, String barcode, int stock, double price,String image){
         int answer = JOptionPane.showConfirmDialog(null,"Are you sure you want to change this product?","Confirm",JOptionPane.YES_NO_OPTION);
         if (answer == 0){
-            boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price);
+            boolean isFound = AdminViewController.saveEditChanges(name,barcode,stock,price,image);
             if (isFound){
                 //change card to details Panel
                 rightAdCl.show(rightAdPanel,"1");
@@ -483,10 +479,10 @@ public class UserGUI extends JFrame {
         if (answer == 0){
             boolean isFound = AdminViewController.orderProduct(productOrdering,numOrdering,price);
             if (isFound){
-                JOptionPane.showMessageDialog(null,"Product updated");
+                displayMessage("Product updated");
                 rightAdCl.show(rightAdPanel,"1");
             } else {
-                JOptionPane.showMessageDialog(null,"Product not found");
+                displayMessage("Product not found");
             }
         }
     }

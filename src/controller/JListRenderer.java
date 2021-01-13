@@ -17,10 +17,10 @@ public abstract class JListRenderer extends DefaultListCellRenderer{
         }
         return resizedImage;
     }
-    public int calcNewWidth(Image img){
+    public int calcNewWidth(Image img, int newHeight){
         float currentWidth = img.getWidth(null);
         float currentHeight = img.getHeight(null);
-        int newHeight = 100;
+//        newHeight = 100;
         int newWidth = Math.round(newHeight/(currentHeight/currentWidth));
         return newWidth;
     }
