@@ -207,6 +207,7 @@ public class UserGUI extends AbstractView {
                     displayReceipt(message);
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
+                    tFieldPin.setText("");
                 }else{
                     displayMessage("Incorrect pin");
                 }
@@ -238,6 +239,7 @@ public class UserGUI extends AbstractView {
                     displayReceipt(message);
                     rightCl.show(rightPanel,"1");
                     clearScannedProducts(products.getAll());
+                    tFieldCashPaid.setText("");
                 }else{
                     displayMessage("Please insert more cash");
                 }
@@ -509,6 +511,7 @@ public class UserGUI extends AbstractView {
                 displayMessage("Product updated");
                 rightAdCl.show(rightAdPanel,"4");
                 updateStockLists();
+                tFNumOrder.setText("");
             } else {
                 displayMessage("Product not found");
             }
