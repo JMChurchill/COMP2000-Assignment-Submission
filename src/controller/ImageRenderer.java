@@ -22,10 +22,10 @@ public class ImageRenderer extends JListRenderer{
 
             return img;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }

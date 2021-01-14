@@ -9,6 +9,7 @@ import model.ScannedProducts;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -49,7 +50,7 @@ public class UserGUI extends AbstractView {
     private JPanel editDetailsPanel;
     private JButton btnExitAdmin2;
     private JButton btnNewOrder;
-    private JButton btnEditDetailsV;
+    private JButton btnEditDetails;
     private JPanel orderPanel;
     private JTextField tFEditName;
     private JTextField tFEditBarcode;
@@ -73,7 +74,7 @@ public class UserGUI extends AbstractView {
     private JLabel lblOrderTotal;
     private JList jListAllProducts;
     private JList jListLowStock;
-    private JLabel lblImgage;
+    private JLabel lblImage;
     private JPanel placeHolderPanel;
     private JButton btnHint;
     private JButton btnPinHint;
@@ -298,7 +299,7 @@ public class UserGUI extends AbstractView {
                 //todo create a listener that updates order total whenever tFNumOrder changes
             }
         });
-        btnEditDetailsV.addActionListener(new ActionListener() {
+        btnEditDetails.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rightAdCl.show(rightAdPanel,"2");
@@ -350,15 +351,44 @@ public class UserGUI extends AbstractView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo make so can edit barcode (currently relies on barcode to identify product being edited)
+                boolean exceptionFound = false;
+
+                int stock = 0;
+                double price = 0;
+                double wholesalePrice = 0;
                 //get all text field values
                 String name = tFEditName.getText();
                 String barcode = tFEditBarcode.getText();//need to enable editable when converting method to edit barcode
-                int stock = Integer.parseInt(tFEditStock.getText());
-                double price = Double.parseDouble(tFEditPrice.getText());
+                try {
+                    stock = Integer.parseInt(tFEditStock.getText());
+                } catch (NumberFormatException numEx) {
+                    displayMessage("Please enter an integer in the stock field");
+                    exceptionFound = true;
+                }
+                try {
+                    price = Double.parseDouble(tFEditPrice.getText());
+                }catch (NumberFormatException doubleEx) {
+                    displayMessage("Please enter an double in the price field");
+                    exceptionFound = true;
+                }
                 String image = tFEditImg.getText();
-                double wholesalePrice = Double.parseDouble(tFEditWSPrice.getText());
 
-                saveEditChanges(name,barcode,stock,price,image,wholesalePrice);
+                ImageRenderer checkURL = new ImageRenderer();
+                if (checkURL.urlToImage(image) == null){
+                    displayMessage("Could not convert URL to Image");
+                    exceptionFound = true;
+                }
+
+                try {
+                    wholesalePrice = Double.parseDouble(tFEditWSPrice.getText());
+                }catch (NumberFormatException doubleEx) {
+                    displayMessage("Please enter an double in the wholesale price field");
+                    exceptionFound = true;
+                }
+
+                if (!exceptionFound){
+                    saveEditChanges(name,barcode,stock,price,image,wholesalePrice);
+                }
             }
         });
         btnOrderProduct.addActionListener(new ActionListener() {
@@ -448,7 +478,13 @@ public class UserGUI extends AbstractView {
         lblDetailsWSPrice.setText(String.format("Wholesale Price: £%.2f",wholesalePrice));
 
         ImageRenderer renderer = new ImageRenderer();
-        lblImgage.setIcon(new ImageIcon(renderer.urlToImage(Img)));
+
+        BufferedImage Image = renderer.urlToImage(Img);
+        if (Image != null){
+            lblImage.setIcon(new ImageIcon(renderer.urlToImage(Img)));
+        } else {
+            lblImage.setIcon(new ImageIcon("resources/images/imageNotFoundLarge.png"));
+        }
 
         rightAdCl.show(rightAdPanel,"1");
     }

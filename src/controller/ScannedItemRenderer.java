@@ -18,20 +18,11 @@ public class ScannedItemRenderer extends JListRenderer implements ListCellRender
         ScannedProduct is = (ScannedProduct) value;
         setText(String.format(is.getName() + "    Price: £%.2f", is.getPrice()) + "   X " + is.getQuantityScanned() + String.format("   Total: £%.2f",(is.getQuantityScanned()*is.getPrice())));
 
-        try{
-            //convert string to url
-            URL url = new URL(is.getImage());
-            //convert url to image
-            Image urlToImg = ImageIO.read(url);
-            //calculate new width given height = 100
-            int newWidth = calcNewWidth(urlToImg,100);
-                //resize image
-            BufferedImage img = resizeImg(newWidth, 100, urlToImg);
+        BufferedImage img = urlToImage(is.getImage());
+        if (img != null){
             setIcon(new ImageIcon(img));
-//            setIcon(new ImageIcon(urlToImg));
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            setIcon(new ImageIcon("resources/images/imageNotFoundSmall.png"));
         }
 
         setBackForeground(isSelected,list);
@@ -39,5 +30,25 @@ public class ScannedItemRenderer extends JListRenderer implements ListCellRender
         setEnabled(true);
         setFont(list.getFont());
         return this;
+    }
+
+    public BufferedImage urlToImage(String imageURL){
+        //convert string to url
+        try {
+            URL url = new URL(imageURL);
+            //convert url to image
+            Image urlToImg = ImageIO.read(url);
+            //calculate new width given height = 200
+            int newWidth = calcNewWidth(urlToImg,100);
+            BufferedImage img = resizeImg(newWidth, 100, urlToImg);
+
+            return img;
+        } catch (MalformedURLException e) {
+            //e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            //e.printStackTrace();
+            return null;
+        }
     }
 }
