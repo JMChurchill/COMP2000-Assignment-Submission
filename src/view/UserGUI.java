@@ -139,7 +139,7 @@ public class UserGUI extends AbstractView {
                 int Stock = ((Product)ItemSelectJList.getSelectedValue()).getStock();
 
                 if (Stock > 0){
-                    updateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price));
+                    updateScannedJList(CheckoutViewController.addProductToScanned(Barcode, Name, Img, Price,Stock));
                 } else{
                     displayMessage("Sorry this Item is Out of Stock");
                 }

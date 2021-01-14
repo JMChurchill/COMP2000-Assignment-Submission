@@ -5,10 +5,11 @@ import model.ProductDataManager;
 import model.ScannedProduct;
 import model.ScannedProducts;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class CheckoutViewController {
-    public static ArrayList<ScannedProduct> addProductToScanned(String barcode, String name, String img, double price){
+    public static ArrayList<ScannedProduct> addProductToScanned(String barcode, String name, String img, double price,int stock){
         int quantityScanned = 1;
 
         ScannedProducts scannedArray = new ScannedProducts();
@@ -19,7 +20,12 @@ public class CheckoutViewController {
             for (ScannedProduct sP:scannedArray.getAll()) {
                 if (sP.getBarcode().equals(barcode)){
                     quantityScanned = sP.getQuantityScanned() + 1;
-                    sP.setQuantityScanned(quantityScanned);
+                    //check if quantity scanned is greater than stock
+                    if (quantityScanned <= stock){
+                        sP.setQuantityScanned(quantityScanned);
+                    }else {
+                        JOptionPane.showMessageDialog(null, "No more stock");
+                    }
                     break;
                 }
             }
