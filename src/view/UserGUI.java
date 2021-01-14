@@ -71,7 +71,6 @@ public class UserGUI extends AbstractView {
     private JLabel lblOrderSoldPrice;
     private JLabel lblOrderCurStock;
     private JLabel lblOrderCostPProd;
-    private JLabel lblOrderTotal;
     private JList jListAllProducts;
     private JList jListLowStock;
     private JLabel lblImage;
