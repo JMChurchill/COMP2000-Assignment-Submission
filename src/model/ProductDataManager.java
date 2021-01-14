@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProductDataManager implements DataManager{
-//    public String filePath = "resources/ProductData.txt";
-    public String filePath = "resources/ProductDataTest.txt";
+    public String filePath = "resources/ProductData.txt";
+//    public String filePath = "resources/ProductDataTest.txt";
     public String separator = "\\|";
 //may not be static
     private static final ArrayList<Product> products = new ArrayList<>();
