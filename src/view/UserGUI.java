@@ -366,11 +366,15 @@ public class UserGUI extends AbstractView {
             public void actionPerformed(ActionEvent e) {
                 //get product details and num ordering
                 String productOrdering = lblOrderBarcode.getText().replaceAll("\\D+","");//parse lbl for numbers
-                int numOrdering = Integer.parseInt(tFNumOrder.getText());
-                double price = Double.parseDouble(lblOrderSoldPrice.getText().replaceAll("[^\\\\.0123456789]",""));
-                double wholesalePrice = Double.parseDouble(lblOrderCostPProd.getText().replaceAll("[^\\\\.0123456789]",""));
+                try {
+                    int numOrdering = Integer.parseInt(tFNumOrder.getText());
+                    double price = Double.parseDouble(lblOrderSoldPrice.getText().replaceAll("[^\\\\.0123456789]",""));
+                    double wholesalePrice = Double.parseDouble(lblOrderCostPProd.getText().replaceAll("[^\\\\.0123456789]",""));
 
-                orderProduct(productOrdering,numOrdering,price,wholesalePrice);
+                    orderProduct(productOrdering,numOrdering,price,wholesalePrice);
+                }catch (NumberFormatException numericE) {
+                    displayMessage("Please check order quantity is a whole number");
+                }
             }
         });
 //        tFNumOrder.addKeyListener(new KeyAdapter() {
