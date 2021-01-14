@@ -29,4 +29,11 @@ public class ScannedProducts {
         return totalPrice;
     }
 
+    public ScannedProduct getProductAt(int index){
+        if (index >= allScanned.size()){
+            return null;
+        }
+        return allScanned.get(index);
+    }
+
 }
